@@ -1,0 +1,6 @@
+#ifndef _QUANTO_TIMER_H
+#define _QUANTO_TIMER_T
+enum {
+    QUANTO_ACTIVITY(TIMER) = NEW_QUANTO_ACTIVITY_ID,
+};
+#endif

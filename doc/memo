@@ -1,0 +1,56 @@
+Quanto Manual
+
+Activity and Power State Tracking
+
+Concepts
+Activities
+Resources
+Power States
+Regression
+Design Decisions
+  Low overhead
+  No nesting
+
+Using Quanto
+ Compiling with Quanto
+ Instrumenting your application
+
+Instrumentation
+ Basic Primitives
+  Single and Multiple Activity Resources
+  Implementation
+   SingleContext Component Hierarchy
+   SingleContextTrack Interface
+  PowerStates 
+   PowerState Component Hierarchy
+   PowerStateTrack Interface
+ 
+Application
+ Tasks
+ Timer
+ Arbiters
+ Interrupt Handlers
+  Binding
+  Limitations
+   Reentrancy
+ PowerState
+ 
+Logging
+ Challenges
+ Overhead
+ Accounting for Logging
+ Logging to Memory
+ Logging to the Serial Port
+   A New Low Priority Scheduler
+ Compression
+   Challenges
+
+Instrumenting the Application
+
+Using the Data
+  Basic Tools
+  More tools needed
+
+References
+ OSDI Paper
+ 

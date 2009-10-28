@@ -1,0 +1,92 @@
+This is a README with the differences between Quanto 1.5b and Quanto 1.0.
+
+Summary of Changes in Quanto 1.5
+ 1.Automatic activity and resource ids: no need for the instrumenter to create
+   different ACTIVITY and RESOURCE ids, this is handled automatically at
+   compile time. The parsing tools automatically get the mappings from the 
+   nesc compiler, meaning that all of the parsing tools can continue to refer
+   to activities and resources by name.
+ 
+   For activities, this is what changed: 
+      Before:
+        enum {
+          ACT_RED = 1,
+        }
+        call CPUContext.set(mk_act_local(ACT_RED));
+  
+      Now:
+        enum {
+          QUANTO_ACTIVITY(RED) = NEW_QUANTO_ACTIVITY_ID,
+        }
+        call CPUContext.set(mk_act_local(QUANTO_ACTIVITY(RED));
+
+      All references to an activity have to use the macro
+      QUANTO_ACTIVITY(<name>), where name was assigned to by a 
+      NEW_QUANTO_ACTIVITY_ID.
+
+
+   For resources, here's what changed:
+      Before:
+      enum {
+        CPU_RESOURCE_ID = 0,
+      }  
+      In 1.5:
+      enum {
+        QUANTO_RESOURCE(CPU) = NEW_QUANTO_RESOURCE_ID,
+      }
+ 
+   All resource references have to use the macro
+   QUANTO_RESOURCE(<name>), where <name> was assigned to once by the
+   macro NEW_QUANTO_ACTIVITY_ID.
+   
+   The other advantage of this is that the generated activity ids are
+   compact and don't need translation between namespaces, which means
+   less cycles spent *on every activity change*.
+   
+   Lastly, multiple files can declare resources and activities
+   independently, and these are guaranteed not to conflict, allowing
+   multiple modules to be instrumented independently.
+   
+   One caveat is that different compilations or different programs
+   MAY have ids that don't necessarily mean the same thing, so be
+   careful. 
+ 2. New tool to deal with automatic constants:
+    StripQuantoConstants.py
+
+    After you compiled your application, run 
+       StricQuantoConstants.py app.xml 
+    This will generate a QuantoAppConstants.py, which is used by the
+    usual Quanto parsing scripts.
+
+ 3. New cumulative quanto logger for activities.
+    This logger, QuantoLogCumulativeC, periodically logs to the UART
+    the time that was spent by each resource on each activity.
+    It does not produce traces, but decouples the logging rate from
+    the event generation rate, allowing us to inspect applications 
+    with a high event generation rate.
+    It is currently working for SingleContextTrack, not for 
+    MultiContextTrack and for PowerStateTrack. These two have to be
+    routed to one of the other loggers, e.g., 
+    QuantoLogMyUartWriter or QuantoLogCompressedMyUartWriter.
+
+    Current limitations:
+    * Only single activity resources supported in the cumulative
+      logger
+    * Bind not implemented, will not transfer time between bound
+      activities
+    * All activities by other nodes are being aggregated as a single
+      activity.
+
+  3.1 New script to parse the cumulative log:
+    read_ctime_log.py 
+
+    This script will parse ctime messages from a log and show, for
+    each interval and each resource, the fraction of time spent by
+    the resource doing work on behalf of each activity.
+
+ 4. (May be temporary) 
+    New virtualized serial writer (MyVSerialWriter), which allows
+    multiplexing of MySerialWriter. This was needed so we can have
+    QuantoLogCumulativeC and QuantoLogMyUartWriterC working at the
+    same time.
+
