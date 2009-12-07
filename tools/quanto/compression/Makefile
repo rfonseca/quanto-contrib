@@ -2,7 +2,7 @@ CC = gcc
 QUANTO_LOG = $(QUANTO_ROOT)/tos/lib/quanto/QuantoLog
 INCLUDES = $(QUANTO_LOG)/QuantoLogCompressedMyUartWriter.h libquantocode.h
 
-CFLAGS = -g -Wall -DEG_DEBUG
+CFLAGS = -g -Wall #-DEG_DEBUG
 LDFLAGS = -L.
 INCLUDEFLAGS = -I$(QUANTO_LOG)
 

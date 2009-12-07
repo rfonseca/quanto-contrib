@@ -73,7 +73,9 @@ decode_block (bitBuf* buf, entry_t* block, int block_size, bool sync)
    //decode type    (EG(MTF+1))'
    //mtf_init(&mtf);
    for (i = 0; i < block_size; i++) {
+#ifdef QD_DEBUG
       fprintf(stderr,"type, i: %d ", i);
+#endif      
       if (! (d = elias_gamma_decode(buf)))
          break;
       d -= 1;
@@ -85,7 +87,9 @@ decode_block (bitBuf* buf, entry_t* block, int block_size, bool sync)
    //decode resource (EG(MTF+1))'
    //mtf_init(&mtf);
    for (i = 0; i < block_size; i++) {
+#ifdef QD_DEBUG
       fprintf(stderr,"res_id, i: %d ", i);
+#endif      
       if (!(d = elias_gamma_decode(buf)))
          break;
       d -= 1;
@@ -96,7 +100,9 @@ decode_block (bitBuf* buf, entry_t* block, int block_size, bool sync)
 
    //decode time    (EG(delta))'
    for (i = 0; i < block_size; i++) {
+#ifdef QD_DEBUG
       fprintf(stderr,"time, i: %d ", i);
+#endif      
       if (!(d = elias_gamma_decode(buf)))
          break;
       if (i == 0 && sync) {
@@ -113,7 +119,9 @@ decode_block (bitBuf* buf, entry_t* block, int block_size, bool sync)
 
    //decode icount (EG(delta +1))'
    for (i = 0; i < block_size; i++) {
+#ifdef QD_DEBUG
       fprintf(stderr,"icount, i: %d ", i);
+#endif      
       if (!(d = elias_gamma_decode(buf)))
          break;
       if (i == 0 && sync) {
@@ -132,7 +140,9 @@ decode_block (bitBuf* buf, entry_t* block, int block_size, bool sync)
    //decode activity MSB (EG(MTF+1))'
    //mtf_init(&mtf);
    for (i = 0; i < block_size; i++) {
+#ifdef QD_DEBUG
       fprintf(stderr,"act msb, i: %d ", i);
+#endif      
       if (!(d = elias_gamma_decode(buf)))
          break;
       d -= 1;
@@ -144,7 +154,9 @@ decode_block (bitBuf* buf, entry_t* block, int block_size, bool sync)
    //decode activity LSB (EG(MTF+1))'
    //mtf_init(&mtf);
    for (i = 0; i < block_size; i++) {
+#ifdef QD_DEBUG
       fprintf(stderr,"act lsb, i: %d ", i);
+#endif      
       if (!(d = elias_gamma_decode(buf)))
          break;
       d -= 1;
@@ -217,7 +229,9 @@ int main()
    memset(line_buf, 0, sizeof(line_buf));
    while (fgets(line_buf, sizeof(line_buf), stdin) != NULL) {
       line_count++;
+#ifdef QD_DEBUG
       fprintf(stderr, "line %d: %s", line_count, line_buf);
+#endif      
       p = line_buf;
       
       bitBuf_clear(buf);
@@ -226,10 +240,14 @@ int main()
          b = (uint8_t)s;
          p += 3;
          bitBuf_putByte(buf, b);
+#ifdef QD_DEBUG
          fprintf(stderr, "%02X ", b);
+#endif      
       }
+#ifdef QD_DEBUG
       fprintf(stderr, "\n");
       fprintf(stderr, "read %d bytes\n", bitBuf_length(buf));
+#endif      
 
       // Guess the block size
       if (block_size == 0) {
