@@ -1,26 +1,25 @@
-#include "ResourceContexts.h"
-/* Centralized component to offer SingleContext interfaces for different
- * resources. Although new resources don't have to use this component,
- * applications MUST NOT instantiate the generic SingleContextC directly.
- * In the whole system there can be only one instantiation of SingleContextC
- * for each QUANTO_RESOURCE() value.
+#include "QuantoResources.h"
+/* Centralized component to offer Single and MultiActivityResource interfaces
+ * for different resources.  New resources don't have to use this component,
+ * but in the whole system there can be only one instantiation of
+ * SingleActivityResourceC for each QUANTO_RESOURCE() value.
  */
-configuration ResourceContextsC {
+configuration QuantoResourcesC {
     provides {
-        interface SingleContext as CPUContext;
+        interface SingleActivityResource as CPUResource;
 
-        interface MultiContext as Led0Context;
-        interface MultiContext as Led1Context;
-        interface MultiContext as Led2Context;
+        interface MultiActivityResource as Led0Resource;
+        interface MultiActivityResource as Led1Resource;
+        interface MultiActivityResource as Led2Resource;
 
-        //interface MultiContext as CC2420RxContext;
-        //interface SingleContext as CC2420TxContext;
-        interface SingleContext as CC2420Context;
-        interface SingleContext as CC2420SpiContext;
-        interface SingleContext as Msp430Usart0Context;
-        interface SingleContext as Msp430Usart1Context;
+        //interface MultiActivityResource as CC2420RxResource;
+        //interface SingleActivityResource as CC2420TxResource;
+        interface SingleActivityResource as CC2420Resource;
+        interface SingleActivityResource as CC2420SpiResource;
+        interface SingleActivityResource as Msp430Usart0Resource;
+        interface SingleActivityResource as Msp430Usart1Resource;
 
-        interface SingleContext as Sht11Context;
+        interface SingleActivityResource as Sht11Resource;
         //add more resources here...
     
         interface PowerState as CPUPowerState;
@@ -31,32 +30,32 @@ configuration ResourceContextsC {
     }
 } 
 implementation {
-    components new SingleContextC(QUANTO_RESOURCE(CPU)) as CPU;
-    CPUContext = CPU;
+    components new SingleActivityResourceC(QUANTO_RESOURCE(CPU)) as CPU;
+    CPUResource = CPU;
 
-    components new SingleContextC(QUANTO_RESOURCE(CC2420)) as CC2420Ctx;
-    CC2420Context = CC2420Ctx;
+    components new SingleActivityResourceC(QUANTO_RESOURCE(CC2420)) as CC2420Res;
+    CC2420Resource = CC2420Res;
 
-    components new SingleContextC(QUANTO_RESOURCE(CC2420_SPI)) as CC2420SpiCtx;
-    CC2420SpiContext = CC2420SpiCtx;
+    components new SingleActivityResourceC(QUANTO_RESOURCE(CC2420_SPI)) as CC2420SpiRes;
+    CC2420SpiResource = CC2420SpiRes;
 
-    components new SingleContextC(QUANTO_RESOURCE(MSP430_USART0)) as Msp430Usart0Ctx;
-    Msp430Usart0Context = Msp430Usart0Ctx;
+    components new SingleActivityResourceC(QUANTO_RESOURCE(MSP430_USART0)) as Msp430Usart0Res;
+    Msp430Usart0Resource = Msp430Usart0Res;
 
-    components new SingleContextC(QUANTO_RESOURCE(MSP430_USART1)) as Msp430Usart1Ctx;
-    Msp430Usart1Context = Msp430Usart1Ctx;
+    components new SingleActivityResourceC(QUANTO_RESOURCE(MSP430_USART1)) as Msp430Usart1Res;
+    Msp430Usart1Resource = Msp430Usart1Res;
 
-    components new MultiContextC(QUANTO_RESOURCE(LED0)) as Led0;
-    Led0Context = Led0;
+    components new MultiActivityResourceC(QUANTO_RESOURCE(LED0)) as Led0;
+    Led0Resource = Led0;
 
-    components new MultiContextC(QUANTO_RESOURCE(LED1)) as Led1;
-    Led1Context = Led1;
+    components new MultiActivityResourceC(QUANTO_RESOURCE(LED1)) as Led1;
+    Led1Resource = Led1;
 
-    components new MultiContextC(QUANTO_RESOURCE(LED2)) as Led2;
-    Led2Context = Led2;
+    components new MultiActivityResourceC(QUANTO_RESOURCE(LED2)) as Led2;
+    Led2Resource = Led2;
 
-    components new SingleContextC(QUANTO_RESOURCE(SHT11)) as Sht11;
-    Sht11Context = Sht11;
+    components new SingleActivityResourceC(QUANTO_RESOURCE(SHT11)) as Sht11;
+    Sht11Resource = Sht11;
 
     components new PowerStateC(QUANTO_RESOURCE(CC2420)) as CC2420Power;
     CC2420PowerState = CC2420Power;
