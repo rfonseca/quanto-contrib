@@ -282,6 +282,7 @@ implementation {
    async event void
    MultiActivityResourceTrack.added[uint8_t res_id](act_t activity)
    {
+      #if 0
       //activitySet_add(&m_act_sets[res_id], activity)
       delta = (uint16_t)(now - m_last_time[res_id]);
       n = activitySet_numElements(&m_act_sets[res_id]);
@@ -300,7 +301,7 @@ implementation {
       activitySet_add(act);
       
       //see if it is time to report
-      
+      #endif     
    }
    
    async event void
