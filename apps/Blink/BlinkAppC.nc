@@ -49,9 +49,9 @@ implementation
 
   //components QuantoLogPortWriterC;
   //components QuantoLogMyUARTWriterC;
-  //components QuantoLogCompressedMyUartWriterC;
-  components QuantoLogMyUartWriterC;
-  components QuantoLogCumulativeC;
+  components QuantoLogCompressedMyUartWriterC;
+  //components QuantoLogMyUartWriterC;
+  //components QuantoLogCumulativeC;
 
   components ResourceContextsC;
   
