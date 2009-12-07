@@ -2,17 +2,21 @@
 import sys
 from operator import itemgetter
 
-if len(sys.argv) < 2:
-  print "Usage: StripQuantoConstants.py infile [outfile]"
-  print "  infile   NesC XML file with app constants (e.g. app.xml)"
+if len(sys.argv) > 3:
+  print "Usage: StripQuantoConstants.py [infile [outfile]]"
+  print "  infile   NesC XML file with app constants (default: app.xml)"
   print "  outfile  Python class file (default: QuantoAppConstants.py)"
   exit()
 
-infilename  = sys.argv[1]
+infilename  = "app.xml"
 outfilename = "QuantoAppConstants.py"
 
+if len(sys.argv) >= 2:
+  infilename = sys.argv[1]
 if len(sys.argv) == 3:
   outfilename = sys.argv[2]
+
+sys.stderr.write('getting constants from ' + infilename + ' to ' + outfilename + '...')
 
 infile = open(infilename, "r")
 outfile = open(outfilename, "w")
@@ -78,3 +82,5 @@ outfile.write("  }\n")
 
 outfile.close()
 infile.close()
+
+sys.stderr.write('done\n')
