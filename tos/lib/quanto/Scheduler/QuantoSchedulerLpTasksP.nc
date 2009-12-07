@@ -30,7 +30,7 @@
  */
 
 /**
- * This is a modification of SingleContextSchedulerBasicP to add a
+ * This is a modification of QuantoSchedulerBasicP to add a
  * low priority task queue, that only gets executed once the normal
  * priority task queue is empty. This is primarily used for logging.
  * Low priority tasks will execute in FIFO order, only when the
@@ -41,7 +41,7 @@
  * activities across task postings and executions. We create an
  * array of activities of the same size as the array of tasks. For
  * each task posted we keep the activity that was active in the
- * CPUContext at the time of posting, and restore it at the time of
+ * CPUResource at the time of posting, and restore it at the time of
  * calling the task.
  *
  * SchedulerBasicP implements the default TinyOS scheduler sequence, as
@@ -56,15 +56,15 @@
 #include "hardware.h"
 #include "activity.h"
 
-module SingleContextSchedulerQuantoTasksP @safe() {
+module QuantoSchedulerLpTasksP @safe() {
   provides interface Scheduler;
   provides interface TaskBasic[uint8_t id];
   provides interface TaskQuanto[uint8_t id];
   uses interface McuSleep;
 
-  uses interface Init as InitContext;
+  uses interface Init as InitResources;
   uses interface Init as InitPowerState;
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 implementation
 {
@@ -113,11 +113,11 @@ implementation
       // and not to idle. m_wokeup will be false if this is
       // not waking up, but rather walking the task queue.
       if (m_wokeup) {
-        call CPUContext.exitInterrupt(m_act[id]);
+        call CPUResource.exitInterrupt(m_act[id]);
         m_wokeup = FALSE;
       }
       else {
-        call CPUContext.set(m_act[id]);
+        call CPUResource.set(m_act[id]);
       }
       m_act[id] = ACT_INVALID;
 
@@ -128,10 +128,10 @@ implementation
       //If nothing else to do, don't set the idle activity here
       //as we have yet to check the low priority queue
       //if (m_wokeup) {
-      //  call CPUContext.exitInterruptIdle();
+      //  call CPUResource.exitInterruptIdle();
       //  m_wokeup = FALSE;
       //} else {
-      //  call CPUContext.setIdle();
+      //  call CPUResource.setIdle();
       //}
       return NO_TASK;
     }
@@ -156,7 +156,7 @@ implementation
         m_next[m_tail] = id;
         m_tail = id;
       }
-      m_act[id] = call CPUContext.get();
+      m_act[id] = call CPUResource.get();
       return TRUE;
     }
     else
@@ -189,11 +189,11 @@ implementation
       // and not to idle. m_wokeup will be false if this is
       // not waking up, but rather walking the task queue.
       if (m_wokeup) {
-        call CPUContext.exitInterrupt(m_q_act[id]);
+        call CPUResource.exitInterrupt(m_q_act[id]);
         m_wokeup = FALSE;
       }
       else {
-        call CPUContext.set(m_q_act[id]);
+        call CPUResource.set(m_q_act[id]);
       }
       m_q_act[id] = ACT_INVALID;
 
@@ -204,10 +204,10 @@ implementation
       //If we have nothing left to do here, then we should
       //set the CPU activity to idle
       if (m_wokeup) {
-        call CPUContext.exitInterruptIdle();
+        call CPUResource.exitInterruptIdle();
         m_wokeup = FALSE;
       } else {
-        call CPUContext.setIdle();
+        call CPUResource.setIdle();
       }
       return NO_TASK;
     }
@@ -261,14 +261,14 @@ implementation
       for (i = 0; i < NUM_TASKS_Q; i++)
         m_q_act[i] = ACT_INVALID;
     }
-    call InitContext.init();
+    call InitResources.init();
     call InitPowerState.init();
   }
   
   command bool Scheduler.runNextTask()
   {
     uint8_t nextTask;
-    act_t c = call CPUContext.get();
+    act_t c = call CPUResource.get();
     m_wokeup = FALSE;
     atomic
     {
@@ -277,17 +277,17 @@ implementation
       {
         nextTask = popQTask();
         if (nextTask == NO_TASK) {
-          call CPUContext.set(c);
+          call CPUResource.set(c);
           return FALSE;
         }
 
         signal TaskQuanto.runTask[nextTask]();
-        call CPUContext.set(c);
+        call CPUResource.set(c);
         return TRUE;       
       }
     }
     signal TaskBasic.runTask[nextTask]();
-    call CPUContext.set(c);
+    call CPUResource.set(c);
     return TRUE;
   }
 

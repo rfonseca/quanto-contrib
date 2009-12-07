@@ -39,7 +39,7 @@ configuration TinySchedulerC {
 }
 
 implementation {
-  components SingleContextSchedulerQuantoTasksP as Sched;
+  components QuantoSchedulerLpTasksP as Sched;
   components McuSleepC as Sleep;
   Scheduler = Sched;
   TaskBasic = Sched.TaskBasic;
@@ -48,8 +48,8 @@ implementation {
 
   components QuantoResourcesC, SingleActivityResourceP;
   components PowerStateP;
-  Sched.InitContext -> SingleActivityResourceP;
   Sched.CPUResource -> QuantoResourcesC.CPUResource;
+  Sched.InitResources -> SingleActivityResourceP;
   Sched.InitPowerState -> PowerStateP;
 }
 

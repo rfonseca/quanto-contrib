@@ -34,7 +34,7 @@
  * activities across task postings and executions. We create an
  * array of activities of the same size as the array of tasks. For
  * each task posted we keep the activity that was active in the
- * CPUContext at the time of posting, and restore it at the time of
+ * CPUResource at the time of posting, and restore it at the time of
  * calling the task.
  *
  * SchedulerBasicP implements the default TinyOS scheduler sequence, as
@@ -49,14 +49,14 @@
 #include "hardware.h"
 #include "activity.h"
 
-module SingleContextSchedulerBasicP {
+module QuantoSchedulerBasicP {
   provides interface Scheduler;
   provides interface TaskBasic[uint8_t id];
   uses interface McuSleep;
 
-  uses interface Init as InitContext;
+  uses interface Init as InitResources;
   uses interface Init as InitPowerState;
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 implementation
 {
@@ -99,11 +99,11 @@ implementation
       // and not to idle. m_wokeup will be false if this is
       // not waking up, but rather walking the task queue.
       if (m_wokeup) {
-        call CPUContext.exitInterrupt(m_act[id]);
+        call CPUResource.exitInterrupt(m_act[id]);
         m_wokeup = FALSE;
       }
       else {
-        call CPUContext.set(m_act[id]);
+        call CPUResource.set(m_act[id]);
       }
       m_act[id] = ACT_INVALID;
 
@@ -112,10 +112,10 @@ implementation
     else
     {
       if (m_wokeup) {
-        call CPUContext.exitInterruptIdle();
+        call CPUResource.exitInterruptIdle();
         m_wokeup = FALSE;
       } else {
-        call CPUContext.setIdle();
+        call CPUResource.setIdle();
       }
       return NO_TASK;
     }
@@ -140,7 +140,7 @@ implementation
         m_next[m_tail] = id;
         m_tail = id;
       }
-      m_act[id] = call CPUContext.get();
+      m_act[id] = call CPUResource.get();
       return TRUE;
     }
     else
@@ -161,14 +161,14 @@ implementation
       for (i = 0; i < NUM_TASKS; i++)
         m_act[i] = ACT_INVALID;
     }
-    call InitContext.init();
+    call InitResources.init();
     call InitPowerState.init();
   }
   
   command bool Scheduler.runNextTask()
   {
     uint8_t nextTask;
-    act_t c = call CPUContext.get();
+    act_t c = call CPUResource.get();
     atomic
     {
       nextTask = popTask();
@@ -178,7 +178,7 @@ implementation
       }
     }
     signal TaskBasic.runTask[nextTask]();
-    call CPUContext.set(c);
+    call CPUResource.set(c);
     return TRUE;
   }
 
