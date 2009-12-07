@@ -24,9 +24,9 @@ PFLAGS +=  -I. \
           -I$(QUANTO_ROOT)/tos/lib/serial \
           -I$(QUANTO_ROOT)/tos/lib/compression
 
-#XML        = app.xml
-#DUMPTYPES = '-fnesc-dump=constants(name(QUANTO_.*_ACTIVITY_ID) | name(QUANTO_.*_RESOURCE_ID))'
-#
-#CFLAGS += $(DUMPTYPES) -fnesc-dumpfile=$(XML)
+XML        = app.xml
+DUMPTYPES = '-fnesc-dump=constants(name(QUANTO_.*_ACTIVITY_ID) | name(QUANTO_.*_RESOURCE_ID))'
+
+CFLAGS += $(DUMPTYPES) -fnesc-dumpfile=$(XML)
 
 
