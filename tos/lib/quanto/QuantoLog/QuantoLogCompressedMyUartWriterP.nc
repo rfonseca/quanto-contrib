@@ -32,6 +32,8 @@ module QuantoLogCompressedMyUartWriterP {
 
         interface Init as WriterInit;
         interface SplitControl as WriterControl;
+
+        interface SingleContext as CPUContext;
       
         interface BitBuffer;
         interface MoveToFront;
@@ -45,7 +47,8 @@ implementation {
     uint32_t m_count;
 #endif
     static act_t m_act_idle;
-    static act_t act_quanto_log;
+    static act_t act_quanto_write;
+    static act_t act_quanto_cmp;
 
     uint8_t m_sync; //when to encode a syncing block
                     //A sync block has the first time value as absolute (not delta),
@@ -75,7 +78,8 @@ implementation {
             m_head = 0;
             m_tail = 0;
             m_act_idle = mk_act_local(QUANTO_ACTIVITY(IDLE));
-            act_quanto_log = mk_act_local(QUANTO_ACTIVITY(QUANTO_WRITER));
+            act_quanto_cmp = mk_act_local(QUANTO_ACTIVITY(QUANTO_COMPRESS));
+            act_quanto_write    = mk_act_local(QUANTO_ACTIVITY(QUANTO_WRITER));
 #ifdef COUNT_LOG
             m_count = 0;
 #endif
@@ -137,7 +141,7 @@ implementation {
             e->act  = value; //also works for powerstate
         } 
         if (to_write) 
-            call CompressTask.postTask(act_quanto_log);
+            call CompressTask.postTask(act_quanto_cmp);
     }
 
     /* Compression format:
@@ -258,6 +262,7 @@ implementation {
                 ((uint16_t)(call MoveToFront.encode(m))) + 1
             );
         }
+        call CPUContext.set(act_quanto_write);
         call PortWriter.write(m_bitbuf_bytes, call BitBuffer.getNBytes());
     }
 
@@ -271,7 +276,7 @@ implementation {
                 to_write = (m_size >= CBLOCKSIZE);
             } 
             if (to_write)
-                call CompressTask.postTask(act_quanto_log);
+                call CompressTask.postTask(act_quanto_cmp);
        }
     }
 

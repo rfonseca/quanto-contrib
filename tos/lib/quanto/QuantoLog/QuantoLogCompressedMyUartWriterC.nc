@@ -6,6 +6,9 @@ implementation {
     components MainC;
     components QuantoLogCompressedMyUartWriterP as QLog;
     components TinySchedulerC;
+    components ResourceContextsC;
+
+    QLog.CPUContext -> ResourceContextsC.CPUContext;
 
     QLog.Boot -> MainC;
     QLog.CompressTask -> TinySchedulerC.TaskQuanto[unique("TinySchedulerC.TaskQuanto")];
