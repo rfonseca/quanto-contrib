@@ -1,0 +1,28 @@
+Hi,
+
+In an application with no tasks
+I modified the TinyOS scheduler for Quanto, by adding a separate, low priority task queue.
+This task queue has a position for each task that is declared of type TaskQuanto.
+Specifically, in tinyos-2.x-contrib/berkeley/quanto/tos/lib/quanto/SingleContext/SingleContextSchedulerQuantoTasksP.nc:
+
+
+  enum
+  {
+   ...
+    NUM_TASKS_Q = uniqueCount("TinySchedulerC.TaskQuanto"),
+   ...
+  };
+
+  ...
+
+  volatile uint8_t m_q_next[NUM_TASKS_Q];
+  volatile act_t m_q_act[NUM_TASKS_Q]; //Quanto: activity of each task
+
+  ...
+
+All is fine and good, except when I am using this scheduler and there are no such tasks declared.
+Then the above declarations become respectively uint8_t m_q_next[0] and uint16_t m_q_act[0], which causes msp430-gcc to complain with the nasty
+
+app.c:(.text+0x145c): warning: internal error: unsupported relocation error
+
+
