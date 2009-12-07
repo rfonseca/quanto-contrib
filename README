@@ -70,7 +70,7 @@ export PATH=$QUANTO_ROOT/tools/quanto/scripts:$PATH
    Activity:
    Tasks:
      Posting a task with an CPU activity A set guarantees that when the
-     task executes the CPUContext will be executing under activity A
+     task executes the CPUResource will be executing under activity A
    Timers: (VirtualizedTimer)
      Timers will correctly carry activities when you set them.
      Internally, they bind interrupts to a VTimer activity.
@@ -166,7 +166,7 @@ Usage:
 If you are an application writer, you have to create new activity_t's
 for meaningful activities in your application.
 
-You have then to set the CPUContext activity appropriately before starting each one.
+You have then to set the CPUResource activity appropriately before starting each one.
 Quanto will propagate the activity automatically  across task invocations,
 arbiters, timers, and network messages. It will also propagate the activities to other
 resources, like the radio, the leds, and the sht11 in the telos/epic platforms.

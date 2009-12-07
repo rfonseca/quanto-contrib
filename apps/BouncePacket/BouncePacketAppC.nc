@@ -18,7 +18,7 @@ implementation
     components new AMSenderC(AM_BOUNCEPACKET);
     components new AMReceiverC(AM_BOUNCEPACKET);
     
-    components ResourceContextsC;
+    components QuantoResourcesC;
 
     //Enable continuous streaming log over the UART
     components QuantoLogMyUARTWriterC;
@@ -38,7 +38,7 @@ implementation
 
     Bounce.UserButtonNotify -> UserButtonC;
 
-    Bounce.CPUContext -> ResourceContextsC.CPUContext;
+    Bounce.CPUResource -> QuantoResourcesC.CPUResource;
 
     components CC2420ActiveMessageC;
     Bounce.RadioBackoff -> CC2420ActiveMessageC.RadioBackoff[AM_BOUNCEPACKET];

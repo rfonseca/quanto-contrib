@@ -46,11 +46,10 @@ implementation {
   TaskQuanto = Sched.TaskQuanto;
   Sched.McuSleep -> Sleep;
 
-  components ResourceContextsC, SingleContextP;
+  components QuantoResourcesC, SingleActivityResourceP;
   components PowerStateP;
-  components ActivityTypeP;
-  Sched.InitContext -> SingleContextP;
-  Sched.CPUContext -> ResourceContextsC.CPUContext;
+  Sched.InitContext -> SingleActivityResourceP;
+  Sched.CPUResource -> QuantoResourcesC.CPUResource;
   Sched.InitPowerState -> PowerStateP;
 }
 

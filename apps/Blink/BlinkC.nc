@@ -43,7 +43,7 @@ module BlinkC
   uses interface Timer<TMilli> as Timer2;
   uses interface Leds;
   uses interface Boot;
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 implementation
 {
@@ -56,11 +56,11 @@ implementation
 
   event void Boot.booted()
   {
-    call CPUContext.set(mk_act_local(QUANTO_ACTIVITY(RED)));
+    call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(RED)));
     call Timer0.startPeriodic( BASE_PERIOD );
-    call CPUContext.set(mk_act_local(QUANTO_ACTIVITY(GREEN)));
+    call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(GREEN)));
     call Timer1.startPeriodic( BASE_PERIOD<<1 );
-    call CPUContext.set(mk_act_local(QUANTO_ACTIVITY(BLUE)));
+    call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(BLUE)));
     call Timer2.startPeriodic( BASE_PERIOD<<2 );
   }
 

@@ -64,7 +64,7 @@ implementation {
   components CC2420TinyosNetworkC;
   components CC2420PacketC;
   components CC2420ControlC;
-  components ResourceContextsC; 
+  components QuantoResourcesC; 
   
 #if defined(LOW_POWER_LISTENING) || defined(ACK_LOW_POWER_LISTENING)
   components DefaultLplC as LplC;
@@ -116,6 +116,6 @@ implementation {
 
   AM.SubBackoff -> CsmaC;
   
-  //CPUContext
-  AM.CPUContext -> ResourceContextsC.CPUContext; 
+  //CPUResource
+  AM.CPUResource -> QuantoResourcesC.CPUResource; 
 }

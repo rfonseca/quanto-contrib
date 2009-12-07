@@ -7,11 +7,11 @@ implementation {
             LedsC,
             UserButtonC,
             QuantoLogRawUARTC as CLog,
-            ResourceContextsC;
+            QuantoResourcesC;
 
     BurstC.Boot -> MainC.Boot;
     BurstC.Leds -> LedsC;
-    BurstC.CPUContext -> ResourceContextsC.CPUContext;
+    BurstC.CPUResource -> QuantoResourcesC.CPUResource;
     BurstC.UserButtonNotify -> UserButtonC;
     BurstC.QuantoLog -> CLog;
 }

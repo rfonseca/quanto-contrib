@@ -1,7 +1,7 @@
 This application tries to measure the raw costs of changing contexts and recording in memory.
 To do so we repeatedly call change context many times. To avoid even the cost of a compare in a loop, we call the cnanges manually.
 
-Result 1: repeated calls to CPUContext.setContext()
+Result 1: repeated calls to CPUResource.set()
 Delta (in 32KHz tics):
 2 471 0.6643
 3 238 0.3357

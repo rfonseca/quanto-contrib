@@ -16,7 +16,7 @@ module BouncePacketC {
         interface SplitControl as AMControl;
         interface Packet;
         interface Leds;
-        interface SingleContext as CPUContext;
+        interface SingleActivityResource as CPUResource;
         interface RadioBackoff;
 
         interface LowPowerListening;
@@ -173,8 +173,8 @@ implementation {
         if (state != S_IDLE)
             return;
 
-        c = call CPUContext.get();
-        call CPUContext.set(mk_act_local(QUANTO_ACTIVITY(BOUNCE)));
+        c = call CPUResource.get();
+        call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(BOUNCE)));
 
         state = S_STARTED;
 
@@ -188,8 +188,8 @@ implementation {
             scheduleSend(i, getTime() >> 1);
         } 
         call StopTimer.startOneShot( STOP_TIMER );
-        //restore the CPU Context
-        call CPUContext.set(c);
+        //restore the CPU Activity
+        call CPUResource.set(c);
     }
 
     event void StopTimer.fired() {

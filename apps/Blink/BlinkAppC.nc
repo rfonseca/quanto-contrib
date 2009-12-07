@@ -53,9 +53,9 @@ implementation
   //components QuantoLogMyUartWriterC;
   //components QuantoLogCumulativeC;
 
-  components ResourceContextsC;
+  components QuantoResourcesC;
   
-  BlinkC.CPUContext -> ResourceContextsC.CPUContext;
+  BlinkC.CPUResource -> QuantoResourcesC.CPUResource;
 
   BlinkC -> MainC.Boot;
 

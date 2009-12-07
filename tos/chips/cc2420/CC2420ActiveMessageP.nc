@@ -53,7 +53,7 @@ module CC2420ActiveMessageP @safe() {
     interface CC2420Config;
     interface ActiveMessageAddress;
     interface RadioBackoff as SubBackoff;
-    interface SingleContext as CPUContext;
+    interface SingleActivityResource as CPUResource;
   }
 }
 implementation {
@@ -72,7 +72,7 @@ implementation {
     header->dest = addr;
     header->destpan = call CC2420Config.getPanAddr();
     header->src = call AMPacket.address();
-    header->activity = call CPUContext.get();
+    header->activity = call CPUResource.get();
     
     signal SendNotifier.aboutToSend[id](addr, msg);
     
@@ -180,11 +180,11 @@ implementation {
     if(!(call CC2420PacketBody.getMetadata(msg))->crc) {
       return msg;
     }
-    /* Context setting */
+    /* Quanto activity setting */
 
     header = call CC2420PacketBody.getHeader( msg );
-    call CPUContext.bind(header->activity);     //changes the context and binds whatever was spent in the 
-                                      //previous context to the new one, if valid.
+    call CPUResource.bind(header->activity);     //changes the context and binds whatever was spent in the 
+                                                 //previous context to the new one, if valid.
 
     if (call AMPacket.isForMe(msg)) {
       return signal Receive.receive[call AMPacket.type(msg)](msg, payload, len);

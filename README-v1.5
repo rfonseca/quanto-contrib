@@ -12,13 +12,13 @@ Summary of Changes in Quanto 1.5
         enum {
           ACT_RED = 1,
         }
-        call CPUContext.set(mk_act_local(ACT_RED));
+        call CPUResource.set(mk_act_local(ACT_RED));
   
       Now:
         enum {
           QUANTO_ACTIVITY(RED) = NEW_QUANTO_ACTIVITY_ID,
         }
-        call CPUContext.set(mk_act_local(QUANTO_ACTIVITY(RED));
+        call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(RED));
 
       All references to an activity have to use the macro
       QUANTO_ACTIVITY(<name>), where name was assigned to by a 
@@ -64,8 +64,8 @@ Summary of Changes in Quanto 1.5
     It does not produce traces, but decouples the logging rate from
     the event generation rate, allowing us to inspect applications 
     with a high event generation rate.
-    It is currently working for SingleContextTrack, not for 
-    MultiContextTrack and for PowerStateTrack. These two have to be
+    It is currently working for SingleActivityTrack, not for 
+    MultiActivityTrack and for PowerStateTrack. These two have to be
     routed to one of the other loggers, e.g., 
     QuantoLogMyUartWriter or QuantoLogCompressedMyUartWriter.
 

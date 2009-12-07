@@ -81,8 +81,8 @@ implementation {
   components LedsC as Leds;
   CsmaP.Leds -> Leds;
 
-  components ResourceContextsC;
-  CsmaP.CPUContext -> ResourceContextsC.CPUContext;
-  CsmaP.RadioContext -> ResourceContextsC.CC2420Context;  
-  CsmaP.RadioPowerState -> ResourceContextsC.CC2420PowerState;
+  components QuantoResourcesC;
+  CsmaP.CPUResource -> QuantoResourcesC.CPUResource;
+  CsmaP.RadioResource -> QuantoResourcesC.CC2420Resource;  
+  CsmaP.RadioPowerState -> QuantoResourcesC.CC2420PowerState;
 }
