@@ -70,6 +70,7 @@ implementation {
    //should be called inside an atomic block
    uint8_t nextPacket(uint8_t pos) {
       uint8_t p,i;
+      p = 0;
       for (i = 1; i < NUM_CLIENTS; i++) {
          p = (i + pos) % NUM_CLIENTS;
          if (outstanding[p].buf != NULL) {
