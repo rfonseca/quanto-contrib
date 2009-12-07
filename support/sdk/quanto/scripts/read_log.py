@@ -49,6 +49,7 @@ lastStateKey = None;
 cumTime = {}
 cumIc = {}
 cumChanges = {}
+ic = 0
 
 entries = entriesFromLFile(fin)
 
@@ -94,15 +95,19 @@ for entry in entries:
     if (type != QuantoLogConstants.MSG_TYPE_FLUSH_REPORT):
         time = time - initialTime
     s += ' time: ' + str(time)
+    # Fix negative jump in time
     # Special case for interrupts from TIMERA1, which is the iCount
     # overflow interrupt. We must add 65536 to the value of iCount
     # on enter_interrupt for TIMERA1. We read the counter BEFORE the
     # interrupt routine, which is the routine that will correct the base.
-    ic = entry.get_ic();
-    if (entry.get_type() == QuantoLogConstants.SINGLE_CHG_ENTER_INT and
-        (activity(entry.get_arg())).get_activity_type() == QuantoAppConstants.QUANTO_PXY_TIMERA1_ACTIVITY_ID):
-        ic += 65536
-    s += ' icount: ' + str(ic)
+    #if (entry.get_type() == QuantoLogConstants.SINGLE_CHG_ENTER_INT and
+    #    (activity(entry.get_arg())).get_activity_type() == Msp430Constants.ACT_PXY_TIMERA1):
+    #    ic += 65536
+    last_ic = ic
+    ic = entry.get_ic()
+    if (last_ic - ic > 32768):
+	ic += 65536
+   s += ' icount: ' + str(ic)
     if (type == QuantoLogConstants.MSG_TYPE_SINGLE_CHG or
         type == QuantoLogConstants.MSG_TYPE_MULTI_CHG ):
         s += ' ctx: %s ' % activity(entry.get_arg())
