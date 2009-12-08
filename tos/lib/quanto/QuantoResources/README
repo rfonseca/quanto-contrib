@@ -1,31 +1,34 @@
-SingleContext is the interface to be used for resources that can only be
+SingleActivityResource is the interface for resources that can only be
 set to a single activity at any given time. The foremost example of this is
 one (single-core) CPU. Contrast with MultiContext interface.
 
-Each single-owner resource in the system should be represented by a SingleContext.
+Each single-owner resource in the system should be represented by a SingleActivityResource.
 
-The set of components and modules here implement a KeyMap between globally known,
-user-defined RESOURCE_CTX_IDs and a local keyspace for efficiency.
+MultiActivityResource is the interface for resources that work on behalf
+of more than one activity at a time. One example of this are the Leds.
 
-SingleContext is the interface.
-SingleContextC is a generic configuration that is used once to define a resource (such as 
-CPUContextC).
-It maps one SingleContextG entry (parameterized by global id) to one SingleContextP
+Both types of resources are created on a common, externally visible id namespace defined
+per compiled application. Resource ids are allocated by the macro NEW_QUANTO_RESOURCE_ID,
+and named by QUANTO_RESOURCE(<name>). Many of them are created in the QuantoResources.h
+file, although this does not have to be the case.
+
+The SingleActivityResources are handled by the SingleActivityResource
+set of components, and internally use an array to represent the
+current activity by each resource. This array uses a KeyMap to map the
+shared QUANTO_RESOURCE_ID namespace to a local SINGLE_ACTIVITY_UNIQUE
+namespace. 
+
+The MultiActivityResources are handled by the MultiActivityResource
+set of components, and internally also use a compact local namespace
+for efficient memory usage. They also use a mapping from the shared
+QUANTO_RESOURCE_ID namespace to a local MULTI_ACTIVITY_UNIQUE
+namespace.
+
+For the SingleActivityResources:
+  SingleActivityResource is the interface.
+  SingleActivityResourceC is a generic configuration that is used once
+    to define a resource (such as CPUResourceC). It maps one SingleActivityResourceG entry (parameterized by global id) to one SingleActivityResourceP
 (parameterized by local id). The local id is defined to be unique from the 
-string SINGLE_CONTEXT_UNIQUE defined in SingleContext.h
-
-Scheduler
----------
-The scheduler for quanto is SingleContextSchedulerQuantoTasksP, as wired in TinySchedulerC.nc 
-in this directory.
-
-This scheduler correctly propagates activity labels as tasks get scheduled.
-
-This scheduler adds the a lowest-priority TaskQuanto queue, that runs Quanto logging tasks
-at the lowest priority. They also allow scheduling tasks to run under an activity that is not
-the current activity when they get scheduled, without causing extra activity-switches to do
-that. 
-
-TaskQuanto tasks are used by the Low-priority serial stack for streaming quanto logging.
+string SINGLE_ACTIVITY_UNIQUE defined in QuantoResources.h
 
 

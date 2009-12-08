@@ -3,6 +3,9 @@
 
 #include "quanto.h"
 
+#define QUANTO_SINGLE_RESOURCE_UNIQUE "quanto_s_resource_unique"
+#define QUANTO_MULTI_RESOURCE_UNIQUE "quanto_m_resource_unique"
+
 /* These are globally known resource ids. 
  * Resources represent energy sinks, peripherals that can independently spend energy.
  * These are NOT activities, they get attributed activities over time.
