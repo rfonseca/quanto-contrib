@@ -1,16 +1,16 @@
-#include "MultiContext.h"
-generic configuration MultiContextC(uint8_t global_res_id) {
-    provides interface MultiContext;
+#include "QuantoResources.h"
+generic configuration MultiActivityResourceC(uint8_t global_res_id) {
+    provides interface MultiActivityResource;
 }
 implementation {
-    enum { LOCAL_ID = unique(MULTI_CONTEXT_UNIQUE) };
+    enum { LOCAL_ID = unique(QUANTO_MULTI_RESOURCE_UNIQUE) };
    
-    components MultiContextG, MultiContextImplP;
+    components MultiActivityResourceG, MultiActivityResourceImplP;
     
-    MultiContext = MultiContextG.MultiContext[global_res_id];
+    MultiActivityResource = MultiActivityResourceG.MultiActivityResource[global_res_id];
     
-    MultiContextG.MultiContextLocal[global_res_id] -> 
-                MultiContextImplP.MultiContext[LOCAL_ID];
-    MultiContextG.MultiContextTrackLocal[global_res_id] ->
-                MultiContextImplP.MultiContextTrack[LOCAL_ID];
+    MultiActivityResourceG.MultiActivityResourceLocal[global_res_id] -> 
+                MultiActivityResourceImplP.MultiActivityResource[LOCAL_ID];
+    MultiActivityResourceG.MultiActivityResourceTrackLocal[global_res_id] ->
+                MultiActivityResourceImplP.MultiActivityResourceTrack[LOCAL_ID];
 }

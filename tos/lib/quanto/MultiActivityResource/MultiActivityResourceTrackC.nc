@@ -1,7 +1,7 @@
-configuration MultiContextTrackC {
-    provides interface MultiContextTrack[uint8_t id];
+configuration MultiActivityResourceTrackC {
+    provides interface MultiActivityResourceTrack[uint8_t id];
 }
 implementation {
-    components MultiContextG;
-    MultiContextTrack = MultiContextG;
+    components MultiActivityResourceG;
+    MultiActivityResourceTrack = MultiActivityResourceG;
 }

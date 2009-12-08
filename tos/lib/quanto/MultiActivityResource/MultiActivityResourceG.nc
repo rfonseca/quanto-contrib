@@ -1,74 +1,74 @@
 /* mapping between global and local id spaces */
-/* see MultiContextC for wiring */
+/* see MultiActivityResourceC for wiring */
 
-module MultiContextG {
-    provides interface MultiContext[uint8_t id];
-    provides interface MultiContextTrack[uint8_t id];
-    uses interface MultiContext as MultiContextLocal[uint8_t id];
-    uses interface MultiContextTrack as MultiContextTrackLocal[uint8_t id];
+module MultiActivityResourceG {
+    provides interface MultiActivityResource[uint8_t id];
+    provides interface MultiActivityResourceTrack[uint8_t id];
+    uses interface MultiActivityResource as MultiActivityResourceLocal[uint8_t id];
+    uses interface MultiActivityResourceTrack as MultiActivityResourceTrackLocal[uint8_t id];
 }
 implementation {
     async command error_t
-    MultiContext.add[uint8_t id](act_t activity)
+    MultiActivityResource.add[uint8_t id](act_t activity)
     {
-        return call MultiContextLocal.add[id](activity);
+        return call MultiActivityResourceLocal.add[id](activity);
     }
 
     async command error_t
-    MultiContext.remove[uint8_t id](act_t activity)
+    MultiActivityResource.remove[uint8_t id](act_t activity)
     {
-        return call MultiContextLocal.remove[id](activity);
+        return call MultiActivityResourceLocal.remove[id](activity);
     }
 
     async command error_t
-    MultiContext.setIdle[uint8_t id]()
+    MultiActivityResource.setIdle[uint8_t id]()
     {
-        return call MultiContextLocal.setIdle[id]();
+        return call MultiActivityResourceLocal.setIdle[id]();
     }
     
     async event void
-    MultiContextTrackLocal.added[uint8_t id](act_t activity)
+    MultiActivityResourceTrackLocal.added[uint8_t id](act_t activity)
     {
-        signal MultiContextTrack.added[id](activity);
+        signal MultiActivityResourceTrack.added[id](activity);
     }
     
     async event void
-    MultiContextTrackLocal.removed[uint8_t id](act_t activity)
+    MultiActivityResourceTrackLocal.removed[uint8_t id](act_t activity)
     {
-        signal MultiContextTrack.removed[id](activity);
+        signal MultiActivityResourceTrack.removed[id](activity);
     }
 
     async event void
-    MultiContextTrackLocal.idle[uint8_t id]()
+    MultiActivityResourceTrackLocal.idle[uint8_t id]()
     {
-        signal MultiContextTrack.idle[id]();
+        signal MultiActivityResourceTrack.idle[id]();
     }
     
     /* Default impl for unconnected parameters */
     default async command error_t  
-    MultiContextLocal.add[uint8_t id](act_t activity) {
+    MultiActivityResourceLocal.add[uint8_t id](act_t activity) {
        return FAIL; 
     }
 
     default async command error_t
-    MultiContextLocal.remove[uint8_t id](act_t activity) {
+    MultiActivityResourceLocal.remove[uint8_t id](act_t activity) {
         return FAIL;
     }
 
     default async command error_t
-    MultiContextLocal.setIdle[uint8_t id]() {
+    MultiActivityResourceLocal.setIdle[uint8_t id]() {
         return FAIL;
     }
 
     default async event void
-    MultiContextTrack.added[uint8_t id](act_t activity) {
+    MultiActivityResourceTrack.added[uint8_t id](act_t activity) {
     }
         
     default async event void
-    MultiContextTrack.removed[uint8_t id](act_t activity) {
+    MultiActivityResourceTrack.removed[uint8_t id](act_t activity) {
     }
         
     default async event void
-    MultiContextTrack.idle[uint8_t id]() {
+    MultiActivityResourceTrack.idle[uint8_t id]() {
     }
 }
