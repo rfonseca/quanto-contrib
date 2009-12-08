@@ -1,162 +1,162 @@
 /* mapping between global and local id spaces */
-/* @see SingleContextC for wiring */
+/* @see SingleActivityResourceC for wiring */
 
-module SingleContextG {
-    provides interface SingleContext[uint8_t id];
-    provides interface SingleContextTrack[uint8_t id];
-    uses interface SingleContext as SingleContextLocal[uint8_t id];
-    uses interface SingleContextTrack as SingleContextTrackLocal[uint8_t id];
+module SingleActivityResourceG {
+    provides interface SingleActivityResource[uint8_t id];
+    provides interface SingleActivityResourceTrack[uint8_t id];
+    uses interface SingleActivityResource as SingleActivityResourceLocal[uint8_t id];
+    uses interface SingleActivityResourceTrack as SingleActivityResourceTrackLocal[uint8_t id];
 }
 implementation {
     inline async command act_t 
-    SingleContext.get[uint8_t id]() 
+    SingleActivityResource.get[uint8_t id]() 
     {
-        return call SingleContextLocal.get[id]();
+        return call SingleActivityResourceLocal.get[id]();
     }
 
     inline async command void  
-    SingleContext.set[uint8_t id](act_t newActivity) 
+    SingleActivityResource.set[uint8_t id](act_t newActivity) 
     {
-        call SingleContextLocal.set[id](newActivity);
+        call SingleActivityResourceLocal.set[id](newActivity);
     }
 
     inline async command void  
-    SingleContext.setLocal[uint8_t id](act_type_t newAct) 
+    SingleActivityResource.setLocal[uint8_t id](act_type_t newAct) 
     {
-        call SingleContextLocal.setLocal[id](newAct);
+        call SingleActivityResourceLocal.setLocal[id](newAct);
     }
 
     inline async command void  
-    SingleContext.setUnknown[uint8_t id]() 
+    SingleActivityResource.setUnknown[uint8_t id]() 
     {
-        call SingleContextLocal.setUnknown[id]();
+        call SingleActivityResourceLocal.setUnknown[id]();
     }
 
     inline async command void  
-    SingleContext.setInvalid[uint8_t id]() 
+    SingleActivityResource.setInvalid[uint8_t id]() 
     {
-        call SingleContextLocal.setInvalid[id]();
+        call SingleActivityResourceLocal.setInvalid[id]();
     }
 
     inline async command void  
-    SingleContext.setIdle[uint8_t id]() 
+    SingleActivityResource.setIdle[uint8_t id]() 
     {
-        call SingleContextLocal.setIdle[id]();
+        call SingleActivityResourceLocal.setIdle[id]();
     }
 
     inline async command bool 
-    SingleContext.isValid[uint8_t id]() 
+    SingleActivityResource.isValid[uint8_t id]() 
     {
-        return call SingleContextLocal.isValid[id]();
+        return call SingleActivityResourceLocal.isValid[id]();
     }
 
-    inline async command void SingleContext.bind[uint8_t id](act_t newActivity)
+    inline async command void SingleActivityResource.bind[uint8_t id](act_t newActivity)
     {
-        return call SingleContextLocal.bind[id](newActivity);
+        return call SingleActivityResourceLocal.bind[id](newActivity);
     }
 
-    inline async command act_t SingleContext.enterInterrupt[uint8_t id](act_t newActivity)
+    inline async command act_t SingleActivityResource.enterInterrupt[uint8_t id](act_t newActivity)
     {
-        return call SingleContextLocal.enterInterrupt[id](newActivity);
+        return call SingleActivityResourceLocal.enterInterrupt[id](newActivity);
     }
 
-    inline async command void SingleContext.exitInterrupt[uint8_t id](act_t restoreContext)  
+    inline async command void SingleActivityResource.exitInterrupt[uint8_t id](act_t restoreActivity)  
     {
-        call SingleContextLocal.exitInterrupt[id](restoreContext);
+        call SingleActivityResourceLocal.exitInterrupt[id](restoreActivity);
     }
 
-    inline async command void SingleContext.exitInterruptIdle[uint8_t id]()  
+    inline async command void SingleActivityResource.exitInterruptIdle[uint8_t id]()  
     {
-        call SingleContextLocal.exitInterruptIdle[id]();
+        call SingleActivityResourceLocal.exitInterruptIdle[id]();
     }
 
 
 
-    /* SingleContextTrack */
+    /* SingleActivityResourceTrack */
 
     inline async event void 
-    SingleContextTrackLocal.changed[uint8_t id](act_t oldActivity, act_t newActivity) 
+    SingleActivityResourceTrackLocal.changed[uint8_t id](act_t oldActivity, act_t newActivity) 
     {
-        signal SingleContextTrack.changed[id](oldActivity, newActivity);
+        signal SingleActivityResourceTrack.changed[id](oldActivity, newActivity);
     }
 
     inline async event void 
-    SingleContextTrackLocal.bound[uint8_t id](act_t oldActivity, act_t newActivity) 
+    SingleActivityResourceTrackLocal.bound[uint8_t id](act_t oldActivity, act_t newActivity) 
     {
-        signal SingleContextTrack.bound[id](oldActivity, newActivity);
+        signal SingleActivityResourceTrack.bound[id](oldActivity, newActivity);
     }
 
     inline async event void
-    SingleContextTrackLocal.enteredInterrupt[uint8_t id](act_t oldActivity, act_t newActivity)
+    SingleActivityResourceTrackLocal.enteredInterrupt[uint8_t id](act_t oldActivity, act_t newActivity)
     {
-        signal SingleContextTrack.enteredInterrupt[id](oldActivity, newActivity);
+        signal SingleActivityResourceTrack.enteredInterrupt[id](oldActivity, newActivity);
     }
 
     inline async event void
-    SingleContextTrackLocal.exitedInterrupt[uint8_t id](act_t oldActivity, act_t newActivity)
+    SingleActivityResourceTrackLocal.exitedInterrupt[uint8_t id](act_t oldActivity, act_t newActivity)
     {
-        signal SingleContextTrack.exitedInterrupt[id](oldActivity, newActivity);
+        signal SingleActivityResourceTrack.exitedInterrupt[id](oldActivity, newActivity);
     }
 
     //default implementations for unconnected parameters
 
-    default async command act_t SingleContextLocal.get[uint8_t id]() {
+    default async command act_t SingleActivityResourceLocal.get[uint8_t id]() {
         return ACT_INVALID;
     }
 
-    default async command void SingleContextLocal.set[uint8_t id](act_t context) {
+    default async command void SingleActivityResourceLocal.set[uint8_t id](act_t activity) {
     }
 
-    default async command void SingleContextLocal.setLocal[uint8_t id](act_type_t newAct) {
+    default async command void SingleActivityResourceLocal.setLocal[uint8_t id](act_type_t newAct) {
     }
 
-    default async command void SingleContextLocal.setUnknown[uint8_t id]() {
+    default async command void SingleActivityResourceLocal.setUnknown[uint8_t id]() {
     }
 
-    default async command void SingleContextLocal.setInvalid[uint8_t id]() {
+    default async command void SingleActivityResourceLocal.setInvalid[uint8_t id]() {
     }
 
-    default async command void SingleContextLocal.setIdle[uint8_t id]() {
+    default async command void SingleActivityResourceLocal.setIdle[uint8_t id]() {
     }
 
     default async command bool 
-    SingleContextLocal.isValid[uint8_t id]() {
+    SingleActivityResourceLocal.isValid[uint8_t id]() {
         return FALSE;
     }
 
     default async command void
-    SingleContextLocal.bind[uint8_t id](act_t n) 
+    SingleActivityResourceLocal.bind[uint8_t id](act_t n) 
     {
     }
 
     default async command act_t 
-    SingleContextLocal.enterInterrupt[uint8_t id](act_t newActivity) {
+    SingleActivityResourceLocal.enterInterrupt[uint8_t id](act_t newActivity) {
         return ACT_INVALID;
     }
 
     default async command void
-    SingleContextLocal.exitInterrupt[uint8_t id](act_t restoreContext) {
+    SingleActivityResourceLocal.exitInterrupt[uint8_t id](act_t restoreActivity) {
     }
 
     default async command void
-    SingleContextLocal.exitInterruptIdle[uint8_t id]() {
+    SingleActivityResourceLocal.exitInterruptIdle[uint8_t id]() {
     }
 
-    /* SingleContextTrack */
+    /* SingleActivityResourceTrack */
     default async event void 
-    SingleContextTrack.changed[uint8_t id](act_t oldActivity, act_t newActivity) {
-    }
-
-    default async event void 
-    SingleContextTrack.bound[uint8_t id](act_t oldActivity, act_t newActivity) {
+    SingleActivityResourceTrack.changed[uint8_t id](act_t oldActivity, act_t newActivity) {
     }
 
     default async event void 
-    SingleContextTrack.enteredInterrupt[uint8_t id](act_t oldActivity, act_t newActivity) {
+    SingleActivityResourceTrack.bound[uint8_t id](act_t oldActivity, act_t newActivity) {
     }
 
     default async event void 
-    SingleContextTrack.exitedInterrupt[uint8_t id](act_t oldActivity, act_t newActivity) {
+    SingleActivityResourceTrack.enteredInterrupt[uint8_t id](act_t oldActivity, act_t newActivity) {
+    }
+
+    default async event void 
+    SingleActivityResourceTrack.exitedInterrupt[uint8_t id](act_t oldActivity, act_t newActivity) {
     }
 
 }

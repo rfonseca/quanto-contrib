@@ -1,17 +1,17 @@
-configuration SingleContextP {
+configuration SingleActivityResourceP {
     provides {
-        interface SingleContext[uint8_t local_res_id];
-        interface SingleContextTrack[uint8_t local_res_id];
+        interface SingleActivityResource[uint8_t local_res_id];
+        interface SingleActivityResourceTrack[uint8_t local_res_id];
         interface Init;
     }
 }
 
 implementation {
-    components SingleContextImplP, ActivityTypeP;
+    components SingleActivityResourceImplP, ActivityTypeP;
 
-    SingleContext = SingleContextImplP;
-    SingleContextTrack = SingleContextImplP;
-    Init = SingleContextImplP;
+    SingleActivityResource = SingleActivityResourceImplP;
+    SingleActivityResourceTrack = SingleActivityResourceImplP;
+    Init = SingleActivityResourceImplP;
 
-    SingleContextImplP.ActivityType -> ActivityTypeP;
+    SingleActivityResourceImplP.ActivityType -> ActivityTypeP;
 }

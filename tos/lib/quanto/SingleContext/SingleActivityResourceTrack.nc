@@ -3,8 +3,8 @@
 
 /** Authors: Rodrigo Fonseca and Jay Taneja */
 
-interface SingleContextTrack {
-    /** Event signaled when the context changes */
+interface SingleActivityResourceTrack {
+    /** Event signaled when the activity changes */
     async event void changed(act_t oldActivity, act_t newActivity);
 
 

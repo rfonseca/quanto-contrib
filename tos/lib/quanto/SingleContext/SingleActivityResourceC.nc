@@ -1,16 +1,16 @@
-#include "SingleContext.h"
-generic configuration SingleContextC(uint8_t global_res_id) {
-    provides interface SingleContext;
+#include "QuantoResources.h"
+generic configuration SingleResourceActivityC(uint8_t global_res_id) {
+    provides interface SingleResourceActivity;
 }
 implementation {
-   enum { LOCAL_ID = unique(SINGLE_CONTEXT_UNIQUE) };
+   enum { LOCAL_ID = unique(QUANTO_SINGLE_RESOURCE_UNIQUE) };
 
-   components SingleContextG, SingleContextP; 
+   components SingleResourceActivityG, SingleResourceActivityP; 
 
-   SingleContext = SingleContextG.SingleContext[global_res_id];
+   SingleResourceActivity = SingleResourceActivityG.SingleResourceActivity[global_res_id];
 
-   SingleContextG.SingleContextLocal[global_res_id] -> 
-                  SingleContextP.SingleContext[LOCAL_ID];
-   SingleContextG.SingleContextTrackLocal[global_res_id] -> 
-                  SingleContextP.SingleContextTrack[LOCAL_ID];
+   SingleResourceActivityG.SingleResourceActivityLocal[global_res_id] -> 
+                  SingleResourceActivityP.SingleResourceActivity[LOCAL_ID];
+   SingleResourceActivityG.SingleResourceActivityTrackLocal[global_res_id] -> 
+                  SingleResourceActivityP.SingleResourceActivityTrack[LOCAL_ID];
 }

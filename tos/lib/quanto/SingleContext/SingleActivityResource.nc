@@ -2,48 +2,48 @@
 
 /** Authors: Rodrigo Fonseca and Jay Taneja */
 
-interface SingleContext {
-    /** Returns the current context */
+interface SingleActivityResource {
+    /** Returns the current activity */
     async command act_t get();
 
-    /** Sets the current context */
+    /** Sets the current activity */
     async command void  set(act_t newActivity);
 
-    /** Sets the current context with local node
+    /** Sets the current activity with local node
      *  and activity type 'newAct' 
      */
     async command void  setLocal(act_type_t newAct);
 
-    /** Sets the current context to unknown */
+    /** Sets the current activity to unknown */
     async command void setUnknown();
-    /** Sets the current context to invalid */
+    /** Sets the current activity to invalid */
     async command void setInvalid();
-    /** sets the current context to idle */
+    /** sets the current activity to idle */
     async command void setIdle();
 
-    /** Whether the current context is valid */
+    /** Whether the current activity is valid */
     async command bool  isValid();
 
     /****** These only really apply to the CPU  ***********/
 
-    /** Indicates a change in context AND that the old context is
+    /** Indicates a change in activity AND that the old activity is
      *  to be bound to the new one. This means that the 
-     *  accounting of the previous context is to be attributed to
-     *  the new contex.
+     *  accounting of the previous activity is to be attributed to
+     *  the new activity.
      *  
      */
     async command void bind(act_t newActivity);
 
     /** Called at the start of an interrupt handler.
      *  This works in a pair with exitInterrupt. Both functions
-     *  assume that the handler will restore the old context
+     *  assume that the handler will restore the old activity
      *  before returning.
      *  This command MUST override the node part of newActivity with
      *  TOS_NODE_ID
      *
-     *  @param newActivity the (proxy) context entered at the interrupt
+     *  @param newActivity the (proxy) activity entered at the interrupt
      *                    handler. 
-     *  @return the previous context to be restored later.
+     *  @return the previous activity to be restored later.
      */
     async command act_t enterInterrupt(act_t newActivity);
 
@@ -51,12 +51,12 @@ interface SingleContext {
      *  restore activity is _idle_, this function doesn't register
      *  change. This is because the task loop will do so
      *  appropriately.
-     *  @param restoreContext the old context to be restored after the
+     *  @param restoreContext the old activity to be restored after the
      *                        handler returns. This is kept as a stack
      *                        variable by the handler.
      */
     async command void   exitInterrupt(act_t restoreActivity);
-    /** Forces an exitInterrupt returning the context to idle. 
+    /** Forces an exitInterrupt returning the activity to idle. 
      *  This should be called by the scheduler, on the first time
      *  after waking up from an interrupt.
      */

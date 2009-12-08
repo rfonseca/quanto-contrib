@@ -1,7 +1,7 @@
-configuration SingleContextTrackC {
-    provides interface SingleContextTrack[uint8_t id];
+configuration SingleActivityResourceTrackC {
+    provides interface SingleActivityResourceTrack[uint8_t id];
 }
 implementation {
-    components SingleContextG;
-    SingleContextTrack = SingleContextG;
+    components SingleActivityResourceG;
+    SingleActivityResourceTrack = SingleActivityResourceG;
 }
