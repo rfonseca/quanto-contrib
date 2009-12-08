@@ -5,8 +5,28 @@ WILL EVEN WORK FOR YOU. See LICENSE for more details.
 
 Authors: Rodrigo Fonseca and Prabal Dutta
 
+Also see README-1.5 for changes.
 
 Using Quanto:
+
+ * IMPORTANT: This version of the code shadows several files in the
+   tinyos-2.x tree. Quanto alters several files in the core of TinyOS.
+   In the near future we will provide patches to know releases of TinyOS,
+   and maybe even integrate into the tree. For now, the way it works is
+   that we include all of the Quanto files *before* the original TinyOS
+   files, so that we use the Quanto modified versions.
+
+   *********************************************************************
+   *  The current version in this branch is know to work with a        *
+   *  tinyos-2.x tree as of February 26th, 2009.                       *
+   *********************************************************************
+  
+   We are working making it better track TinyOS releases. For now, to get
+   a snapshot of the TinyOS tree, use the -D option to CVS checkout, e.g.:
+
+   cvs -d :pserver:anonymous@tinyos.cvs.sourceforge.net:/cvsroot/tinyos co \
+       -D 2009-02-26 -d tinyos-2.x-quanto-snapshot tinyos-2.x
+
  * Currently instrumented are TinyOS 2 platforms that use the MSP430
    and the CC2420 (tested on TelosB and Epic)
  * Ideally you need a mote that has iCount (some Epic boards do). If
