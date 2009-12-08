@@ -1,0 +1,36 @@
+PowerState is the interface for setting the power state of an individual Resource.
+The current version maintains a 16-bit value (defined as powerstate_t
+in PowerState.h) for the power state of each resource. Each resource
+defines its own meaning for the bits, and the changes to each
+resource's power states are tracked independently. 
+
+Currently, the global platform power state is computed offline by the
+log parsing tools. The code in the parsing tools must match the
+meaning of the bits in each resource.
+
+The PowerState interface is generic, allowing the setting and
+resetting of bits in the internal powerstate_t. 
+QuantoResourcesC.nc exports PowerStateC instances and provides
+tracking based on resource ids.
+
+======================================================================
+TODO: we need to make the definition and setting of power states more
+intuitive, so that we can more easily compose the global power state
+on the node itself. This is going to be important for the cumulative
+power state logger, as well as for any attempt to doing the power
+state regression online.
+
+One idea is to have each resource declare a NEW_PS_BIT() so that we
+can use unique, have names for them, and create a compact
+representation. The interfaces for power state change would then work
+by setting and resetting individual power state bits by name (e.g.
+
+e.g.
+interface GlobalPowerState {
+	void setBit(uint8_t bit_index);
+	void resetBit(uint8_t bit_index);
+}
+	
+GlobalPowerState.setBit(QUANTO_PS_BIT(Led0)) and
+GlobalPowerState.resetBit(QUANTO_PS_BIT(Led0))
+
