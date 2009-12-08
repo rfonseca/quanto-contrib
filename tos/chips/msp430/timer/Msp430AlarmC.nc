@@ -37,11 +37,11 @@ generic module Msp430AlarmC(typedef frequency_tag) @safe()
   uses interface Msp430TimerControl;
   uses interface Msp430Compare;
 
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 implementation
 {
-  act_t m_ctx;
+  act_t m_act;
 
   command error_t Init.init()
   {
@@ -63,7 +63,7 @@ implementation
   async event void Msp430Compare.fired()
   {
     call Msp430TimerControl.disableEvents();
-    call CPUContext.bind(m_ctx);
+    call CPUResource.bind(m_act);
     signal Alarm.fired();
   }
 
@@ -91,7 +91,7 @@ implementation
           call Msp430Compare.setEvent( now+remaining );
       }
       call Msp430TimerControl.clearPendingInterrupt();
-      m_ctx = call CPUContext.get();
+      m_act = call CPUResource.get();
       call Msp430TimerControl.enableEvents();
     }
   }

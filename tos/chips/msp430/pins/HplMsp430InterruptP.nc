@@ -22,9 +22,9 @@ configuration HplMsp430InterruptP {
 }
 
 implementation {
-    components HplMsp430InterruptImplP, ResourceContextsC;
+    components HplMsp430InterruptImplP, QuantoResourcesC;
 
-    HplMsp430InterruptImplP.CPUContext -> ResourceContextsC.CPUContext;
+    HplMsp430InterruptImplP.CPUResource -> QuantoResourcesC.CPUResource;
 
 #ifdef __msp430_have_port1
   Port10 = HplMsp430InterruptImplP.Port10;

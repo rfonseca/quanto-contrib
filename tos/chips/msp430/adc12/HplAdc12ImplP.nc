@@ -44,7 +44,7 @@
 
 module HplAdc12ImplP {
   provides interface HplAdc12;
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 implementation
 {
@@ -122,9 +122,9 @@ implementation
   async command bool HplAdc12.isBusy(){ return ADC12CTL1 & ADC12BUSY; }
 
   TOSH_SIGNAL(ADC_VECTOR) {
-    act_t ctx = call CPUContext.enterInterrupt(QUANTO_ACTIVITY(PXY_ADC)); 
+    act_t act = call CPUResource.enterInterrupt(QUANTO_ACTIVITY(PXY_ADC)); 
     signal HplAdc12.conversionDone(ADC12IV);
-    call CPUContext.exitInterrupt(ctx);
+    call CPUResource.exitInterrupt(act);
   }
 }
 

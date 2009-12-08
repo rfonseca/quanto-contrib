@@ -8,12 +8,12 @@ configuration McuSleepC {
   }
 }
 implementation {
-    components McuSleepP, ResourceContextsC;
+    components McuSleepP, QuantoResourcesC;
 
     McuSleep = McuSleepP;
     McuPowerState = McuSleepP;
     McuPowerOverride = McuSleepP;
         
-    McuSleepP.CPUPowerState -> ResourceContextsC.CPUPowerState;
+    McuSleepP.CPUPowerState -> QuantoResourcesC.CPUPowerState;
 
 }

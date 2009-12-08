@@ -53,7 +53,7 @@ generic module Msp430UartImplP() {
   uses interface Counter<T32khz,uint16_t>;
   uses interface Leds;
 
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 
 implementation {
@@ -159,7 +159,7 @@ implementation {
     m_tx_len = len;
     m_tx_pos = 0;
     current_owner = id;    
-    //m_activity = call CPUContext.get();
+    //m_activity = call CPUResource.get();
     call Usart.tx( buf[ m_tx_pos++ ] );
     return SUCCESS;
   }
@@ -176,7 +176,7 @@ implementation {
     else {
       uint8_t* buf = m_tx_buf;
       m_tx_buf = NULL;
-      //call CPUContext.bind(m_activity);
+      //call CPUResource.bind(m_activity);
       signal UartStream.sendDone[id]( buf, m_tx_len, SUCCESS );
     }
   }

@@ -3,8 +3,8 @@ configuration HplMsp430DmaP {
   provides interface HplMsp430DmaInterrupt as Interrupt;
 }
 implementation {
-    components HplMsp430DmaImplP, ResourceContextsC;
-    HplMsp430DmaImplP.CPUContext -> ResourceContextsC.CPUContext;
+    components HplMsp430DmaImplP, QuantoResourcesC;
+    HplMsp430DmaImplP.CPUResource -> QuantoResourcesC.CPUResource;
 
     DmaControl = HplMsp430DmaImplP;
     Interrupt  = HplMsp430DmaImplP;

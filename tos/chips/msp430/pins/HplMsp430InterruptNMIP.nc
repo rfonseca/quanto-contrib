@@ -4,8 +4,8 @@ configuration HplMsp430InterruptNMIP {
   provides interface HplMsp430Interrupt as ACCV;
 }
 implementation {
-    components HplMsp430InterruptNMIImplP, ResourceContextsC;
-    HplMsp430InterruptNMIImplP.CPUContext -> ResourceContextsC.CPUContext;
+    components HplMsp430InterruptNMIImplP, QuantoResourcesC;
+    HplMsp430InterruptNMIImplP.CPUResource -> QuantoResourcesC.CPUResource;
 
     NMI = HplMsp430InterruptNMIImplP;
     OF = HplMsp430InterruptNMIImplP;

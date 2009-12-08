@@ -83,7 +83,7 @@ module HplMsp430Usart0ImplP @safe() {
   uses interface HplMsp430GeneralIO as URXD;
   uses interface HplMsp430GeneralIO as UTXD;
 
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 
 implementation
@@ -96,19 +96,19 @@ implementation
   MSP430REG_NORACE(U0TXBUF);
   
   TOSH_SIGNAL(UART0RX_VECTOR) {
-    act_t ctx = call CPUContext.enterInterrupt(QUANTO_ACTIVITY(PXY_UART0RX)); 
+    act_t act = call CPUResource.enterInterrupt(QUANTO_ACTIVITY(PXY_UART0RX)); 
     uint8_t temp = U0RXBUF;
     signal Interrupts.rxDone(temp);
-    call CPUContext.exitInterrupt(ctx);
+    call CPUResource.exitInterrupt(act);
   }
   
   TOSH_SIGNAL(UART0TX_VECTOR) {
-    act_t ctx = call CPUContext.enterInterrupt(QUANTO_ACTIVITY(PXY_UART0TX)); 
+    act_t act = call CPUResource.enterInterrupt(QUANTO_ACTIVITY(PXY_UART0TX)); 
     if ( call HplI2C.isI2C() )
       signal I2CInterrupts.fired();
     else
       signal Interrupts.txDone();
-    call CPUContext.exitInterrupt(ctx);
+    call CPUResource.exitInterrupt(act);
   }
   
   async command void Usart.setUctl(msp430_uctl_t control) {

@@ -13,8 +13,8 @@ configuration HplMsp430Usart0P {
 
 implementation
 {
-  components HplMsp430Usart0ImplP, ResourceContextsC;
-  HplMsp430Usart0ImplP.CPUContext -> ResourceContextsC.CPUContext;
+  components HplMsp430Usart0ImplP, QuantoResourcesC;
+  HplMsp430Usart0ImplP.CPUResource -> QuantoResourcesC.CPUResource;
 
   Usart = HplMsp430Usart0ImplP;
   Interrupts = HplMsp430Usart0ImplP;

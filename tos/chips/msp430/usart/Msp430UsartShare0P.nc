@@ -64,7 +64,7 @@ implementation {
 
   //This is commented because it is almost redundant with the radio
   //usage itself.
-  //components ResourceContextsC;
-  //ArbiterC.ResourceContext -> ResourceContextsC.Msp430Usart0Context;
+  //components QuantoResourcesC;
+  //ArbiterC.ManagedResource -> QuantoResourcesC.Msp430Usart0Resource;
 
 }

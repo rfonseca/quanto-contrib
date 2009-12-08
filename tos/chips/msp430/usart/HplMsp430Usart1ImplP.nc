@@ -81,7 +81,7 @@ module HplMsp430Usart1ImplP {
   uses interface HplMsp430GeneralIO as URXD;
   uses interface HplMsp430GeneralIO as UTXD;
 
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 
 implementation
@@ -96,16 +96,16 @@ implementation
 
 
   TOSH_SIGNAL(UART1RX_VECTOR) {
-    act_t ctx = call CPUContext.enterInterrupt(QUANTO_ACTIVITY(PXY_UART1RX)); 
+    act_t act = call CPUResource.enterInterrupt(QUANTO_ACTIVITY(PXY_UART1RX)); 
     uint8_t temp = U1RXBUF;
     signal Interrupts.rxDone(temp);
-    call CPUContext.exitInterrupt(ctx);
+    call CPUResource.exitInterrupt(act);
   }
 
   TOSH_SIGNAL(UART1TX_VECTOR) {
-    act_t ctx = call CPUContext.enterInterrupt(QUANTO_ACTIVITY(PXY_UART1TX)); 
+    act_t act = call CPUResource.enterInterrupt(QUANTO_ACTIVITY(PXY_UART1TX)); 
     signal Interrupts.txDone();
-    call CPUContext.exitInterrupt(ctx);
+    call CPUResource.exitInterrupt(act);
   }
 
   async command error_t AsyncStdControl.start() {

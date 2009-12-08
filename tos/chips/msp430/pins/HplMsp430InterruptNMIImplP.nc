@@ -27,17 +27,17 @@ module HplMsp430InterruptNMIImplP
   provides interface HplMsp430Interrupt as NMI;
   provides interface HplMsp430Interrupt as OF;
   provides interface HplMsp430Interrupt as ACCV;
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 implementation
 {
   TOSH_SIGNAL(NMI_VECTOR)
   {
-    act_t ctx = call CPUContext.enterInterrupt(QUANTO_ACTIVITY(PXY_NMI)); 
+    act_t act = call CPUResource.enterInterrupt(QUANTO_ACTIVITY(PXY_NMI)); 
     volatile int n = IFG1;
-    if (n & NMIIFG) { signal NMI.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & OFIFG)  { signal OF.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (FCTL3 & ACCVIFG) { signal ACCV.fired(); call CPUContext.exitInterrupt(ctx); return; }
+    if (n & NMIIFG) { signal NMI.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & OFIFG)  { signal OF.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (FCTL3 & ACCVIFG) { signal ACCV.fired(); call CPUResource.exitInterrupt(act); return; }
   }
 
   default async event void NMI.fired() { call NMI.clear(); }

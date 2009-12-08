@@ -44,7 +44,7 @@ module HplMsp430InterruptImplP @safe()
   provides interface HplMsp430Interrupt as Port26;
   provides interface HplMsp430Interrupt as Port27;
 #endif
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 implementation
 {
@@ -52,17 +52,17 @@ implementation
 #ifdef __msp430_have_port1
   TOSH_SIGNAL(PORT1_VECTOR)
   {
-    act_t ctx = call CPUContext.enterInterrupt(QUANTO_ACTIVITY(PXY_PORT1)); 
+    act_t act = call CPUResource.enterInterrupt(QUANTO_ACTIVITY(PXY_PORT1)); 
     volatile int n = P1IFG & P1IE;
 
-    if (n & (1 << 0)) { signal Port10.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 1)) { signal Port11.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 2)) { signal Port12.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 3)) { signal Port13.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 4)) { signal Port14.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 5)) { signal Port15.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 6)) { signal Port16.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 7)) { signal Port17.fired(); call CPUContext.exitInterrupt(ctx); return; }
+    if (n & (1 << 0)) { signal Port10.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 1)) { signal Port11.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 2)) { signal Port12.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 3)) { signal Port13.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 4)) { signal Port14.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 5)) { signal Port15.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 6)) { signal Port16.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 7)) { signal Port17.fired(); call CPUResource.exitInterrupt(act); return; }
   }
 
   default async event void Port10.fired() { call Port10.clear(); }
@@ -158,17 +158,17 @@ implementation
 #ifdef __msp430_have_port2
   TOSH_SIGNAL(PORT2_VECTOR)
   {
-    act_t ctx = call CPUContext.enterInterrupt(QUANTO_ACTIVITY(PXY_PORT2)); 
+    act_t act = call CPUResource.enterInterrupt(QUANTO_ACTIVITY(PXY_PORT2)); 
     volatile int n = P2IFG & P2IE;
 
-    if (n & (1 << 0)) { signal Port20.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 1)) { signal Port21.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 2)) { signal Port22.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 3)) { signal Port23.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 4)) { signal Port24.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 5)) { signal Port25.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 6)) { signal Port26.fired(); call CPUContext.exitInterrupt(ctx); return; }
-    if (n & (1 << 7)) { signal Port27.fired(); call CPUContext.exitInterrupt(ctx); return; }
+    if (n & (1 << 0)) { signal Port20.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 1)) { signal Port21.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 2)) { signal Port22.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 3)) { signal Port23.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 4)) { signal Port24.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 5)) { signal Port25.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 6)) { signal Port26.fired(); call CPUResource.exitInterrupt(act); return; }
+    if (n & (1 << 7)) { signal Port27.fired(); call CPUResource.exitInterrupt(act); return; }
   }
   default async event void Port20.fired() { call Port20.clear(); }
   default async event void Port21.fired() { call Port21.clear(); }

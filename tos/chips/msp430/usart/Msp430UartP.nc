@@ -15,7 +15,7 @@ generic configuration Msp430UartP() {
 }
 
 implementation {
-    components new Msp430UartImplP() as Impl, ResourceContextsC;
+    components new Msp430UartImplP() as Impl, QuantoResourcesC;
         
     Resource = Impl;
     ResourceConfigure = Impl;
@@ -30,5 +30,5 @@ implementation {
     Counter = Impl;
     Leds = Impl;
      
-    Impl.CPUContext -> ResourceContextsC.CPUContext;
+    Impl.CPUResource -> QuantoResourcesC.CPUResource;
 }

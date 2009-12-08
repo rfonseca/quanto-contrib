@@ -7,8 +7,8 @@ configuration Msp430TimerCommonP
   provides interface Msp430TimerEvent as VectorTimerB1;
 }
 implementation {
-    components Msp430TimerCommonImplP, ResourceContextsC;
-    Msp430TimerCommonImplP.CPUContext -> ResourceContextsC.CPUContext;
+    components Msp430TimerCommonImplP, QuantoResourcesC;
+    Msp430TimerCommonImplP.CPUResource -> QuantoResourcesC.CPUResource;
 
     VectorTimerA0 = Msp430TimerCommonImplP.VectorTimerA0;
     VectorTimerA1 = Msp430TimerCommonImplP.VectorTimerA1;

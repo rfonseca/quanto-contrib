@@ -3,8 +3,8 @@ configuration HplAdc12P {
 }
 implementation
 {
-    components HplAdc12ImplP, ResourceContextsC;
-    HplAdc12P.CPUContext -> ResourceContextsC.CPUContext;
+    components HplAdc12ImplP, QuantoResourcesC;
+    HplAdc12P.CPUResource -> QuantoResourcesC.CPUResource;
     
     HplAdc12 = HplAdc12ImplP;
 }

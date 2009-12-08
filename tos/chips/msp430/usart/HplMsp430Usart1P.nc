@@ -12,8 +12,8 @@ configuration HplMsp430Usart1P {
 
 implementation
 {
-    components HplMsp430Usart1ImplP, ResourceContextsC;
-    HplMsp430Usart1ImplP.CPUContext -> ResourceContextsC.CPUContext;
+    components HplMsp430Usart1ImplP, QuantoResourcesC;
+    HplMsp430Usart1ImplP.CPUResource -> QuantoResourcesC.CPUResource;
 
   AsyncStdControl = HplMsp430Usart1ImplP;
   Usart = HplMsp430Usart1ImplP;

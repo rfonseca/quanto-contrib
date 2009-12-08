@@ -64,6 +64,6 @@ implementation {
   components HplMsp430Usart1C as UsartC;
   PowerManagerC.AsyncStdControl -> UsartC;
 
-  components ResourceContextsC;
-  ArbiterC.ResourceContext -> ResourceContextsC.Msp430Usart1Context;
+  components QuantoResourcesC;
+  ArbiterC.ManagedResource -> QuantoResourcesC.Msp430Usart1Resource;
 }

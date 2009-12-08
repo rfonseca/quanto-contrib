@@ -61,7 +61,7 @@ module HplMsp430DmaImplP {
 
   provides interface HplMsp430DmaControl as DmaControl;
   provides interface HplMsp430DmaInterrupt as Interrupt;
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 
 implementation {
@@ -70,9 +70,9 @@ implementation {
   MSP430REG_NORACE( DMACTL1 );
 
   TOSH_SIGNAL( DACDMA_VECTOR ) {
-    act_t ctx = call CPUContext.enterInterrupt(QUANTO_ACTIVITY(PXY_DACDMA)); 
+    act_t act = call CPUResource.enterInterrupt(QUANTO_ACTIVITY(PXY_DACDMA)); 
     signal Interrupt.fired();
-    call CPUContext.exitInterrupt(ctx);
+    call CPUResource.exitInterrupt(act);
   }
 
   async command void DmaControl.setOnFetch(){

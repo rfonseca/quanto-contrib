@@ -44,7 +44,7 @@ implementation
   Msp430Alarm.Msp430TimerControl -> Msp430Timer;
   Msp430Alarm.Msp430Compare -> Msp430Timer;
 
-  components ResourceContextsC;   
-  Msp430Alarm.CPUContext -> ResourceContextsC.CPUContext;   
+  components QuantoResourcesC;   
+  Msp430Alarm.CPUResource -> QuantoResourcesC.CPUResource;   
 }
 
