@@ -19,8 +19,8 @@ Instrumentation
  Basic Primitives
   Single and Multiple Activity Resources
   Implementation
-   SingleContext Component Hierarchy
-   SingleContextTrack Interface
+   SingleActivityResource Component Hierarchy
+   SingleActivityResourceTrack Interface
   PowerStates 
    PowerState Component Hierarchy
    PowerStateTrack Interface
@@ -44,13 +44,15 @@ Logging
    A New Low Priority Scheduler
  Compression
    Challenges
+ Cumulative Logging
 
 Instrumenting the Application
 
 Using the Data
   Basic Tools
-  More tools needed
+  Managed Node Interface
 
 References
  OSDI Paper
+ 
  
