@@ -76,8 +76,8 @@ implementation {
   components new FcfsArbiterC( "Sht11.Resource" ) as Arbiter;
   Resource = Arbiter;
  
-  components ResourceContextsC;
-  Arbiter.ResourceContext -> ResourceContextsC.Sht11Context;  
+  components QuantoResourcesC;
+  Arbiter.ManagedResource -> QuantoResourcesC.Sht11Context;  
  
   components new SplitControlPowerManagerC();
   SplitControlPowerManagerC.SplitControl -> HplSensirionSht11P;

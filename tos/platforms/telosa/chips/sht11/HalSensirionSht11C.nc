@@ -60,6 +60,6 @@ implementation {
   components LedsC;
   SensirionSht11LogicP.Leds -> LedsC;
 
-  components ResourceContextsC;
-  SensirionSht11LogicP.CPUContext -> ResourceContextsC.CPUContext;
+  components QuantoResourcesC;
+  SensirionSht11LogicP.CPUResource -> QuantoResourcesC.CPUResource;
 }
