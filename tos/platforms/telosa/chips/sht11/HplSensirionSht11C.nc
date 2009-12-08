@@ -77,7 +77,7 @@ implementation {
   Resource = Arbiter;
  
   components QuantoResourcesC;
-  Arbiter.ManagedResource -> QuantoResourcesC.Sht11Context;  
+  Arbiter.ManagedResource -> QuantoResourcesC.Sht11Resource;  
  
   components new SplitControlPowerManagerC();
   SplitControlPowerManagerC.SplitControl -> HplSensirionSht11P;
