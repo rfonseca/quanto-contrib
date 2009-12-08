@@ -62,9 +62,9 @@ generic module SensirionSht11LogicP() {
 
   uses interface Leds;
 
-  //used to keep track of CPUContext when we receive 
+  //used to keep track of CPUResource when we receive 
     //interrupt from InterruptDATA
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 implementation {
 
@@ -92,9 +92,9 @@ implementation {
 
   uint8_t currentClient;
 
-  norace act_t currentContext = ACT_INVALID; //this is only accessed when 
-                                                          //the interrupt that might affect
-                                                          //it is off
+  norace act_t currentActivity = ACT_INVALID; //this is only accessed when 
+                                              //the interrupt that might affect
+                                              //it is off
 
   error_t performCommand();
   void initPins();
@@ -290,7 +290,7 @@ implementation {
   void enableInterrupt() {
     call DATA.makeInput();
     call DATA.set();
-    currentContext = call CPUContext.get();
+    currentActivity = call CPUResource.get();
     call InterruptDATA.enableFallingEdge();
   }
 
@@ -324,7 +324,7 @@ implementation {
 
   async event void InterruptDATA.fired() {
     call InterruptDATA.disable();
-    call CPUContext.bind(currentContext);
+    call CPUResource.bind(currentActivity);
     post readSensor();
   }
 
