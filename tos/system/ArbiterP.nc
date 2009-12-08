@@ -49,10 +49,10 @@
  * @author Philip Levis
  */
 
-/* Context implementation note:
- * 1. CPUContext tracking:
+/* Quanto implementation note:
+ * 1. CPU activity tracking:
  * Requirement: for each enqueued request, we must keep track of the
- * ativity of the CPUContext at the time it is enqueued, and restore it when we dequeue it. 
+ * ativity of the CPUResource at the time it is enqueued, and restore it when we dequeue it. 
  * There are several ways of implementing this:
  *   a. having a separate Activity queue that is kept in sync with the Arbiter queue,
  *   b. changing the queue implementations to keep track of the
@@ -60,10 +60,10 @@
  *   c. keep track of each client's activity in the arbiter. This is possible because
  *      EACH CLIENT CAN ONLY BE ENQUEUED ONCE, and hence, have only one activity
  *      associated with it.
- * 2. Resource context tracking:
+ * 2. Managed Resource activity tracking:
  *   We need to keep track of the activity associated with the controlled resource if
  *   the resource is to be tracked. For this we have the Arbiter optionally be wired
- *   to a SingleContext interface, allowing the exporting of the information to be
+ *   to a SingleActivityResource interface, allowing the exporting of the information to be
  *   decided at wiring time. 
  */
 
@@ -80,8 +80,8 @@ generic module ArbiterP(uint8_t default_owner_id) @safe() {
     interface ResourceConfigure[uint8_t id];
     interface ResourceQueue as Queue;
     interface Leds;
-    interface SingleContext as CPUContext; //must be wired
-    interface SingleContext as ResourceContext; //optional
+    interface SingleActivityResource as CPUResource; //must be wired
+    interface SingleActivityResource as ManagedResource; //optional
   }
 }
 implementation {
@@ -90,7 +90,7 @@ implementation {
   enum {default_owner_id = default_owner_id};
   enum {NO_RES = 0xFF};
   
-  norace act_t clientContext[default_owner_id];
+  norace act_t clientActivity[default_owner_id];
 
   uint8_t state = RES_CONTROLLED;
   norace uint8_t resId = default_owner_id;
@@ -109,7 +109,7 @@ implementation {
       else {
         result = call Queue.enqueue(id);
         if (result == SUCCESS)
-          clientContext[id] = call CPUContext.get(); //save context for dequeue
+          clientActivity[id] = call CPUResource.get(); //save context for dequeue
         return result;
       }
     }
@@ -140,7 +140,7 @@ implementation {
       if(state == RES_BUSY && resId == id) {
         if(call Queue.isEmpty() == FALSE) {
           reqResId = call Queue.dequeue();
-          call CPUContext.set(clientContext[reqResId]); //restores CPUContext
+          call CPUResource.set(clientActivity[reqResId]); //restores CPU activity
           resId = NO_RES;
           state = RES_GRANTING;
           post grantedTask();
@@ -149,7 +149,7 @@ implementation {
         else {
           resId = default_owner_id;
           state = RES_CONTROLLED;
-          call ResourceContext.setIdle();
+          call ManagedResource.setIdle();
           call ResourceConfigure.unconfigure[id]();
           signal ResourceDefaultOwner.granted();
         }
@@ -169,7 +169,7 @@ implementation {
         else if(state == RES_IMM_GRANTING) {
           resId = reqResId;
           state = RES_BUSY;
-          call ResourceContext.set(call CPUContext.get()); //XXX: is this safe here inside atomic?
+          call ManagedResource.set(call CPUResource.get()); //XXX: is this safe here inside atomic?
           return SUCCESS;
         }
       }
@@ -222,7 +222,7 @@ implementation {
       resId = reqResId;
       state = RES_BUSY;
     }
-    call ResourceContext.set(call CPUContext.get());
+    call ManagedResource.set(call CPUResource.get());
     call ResourceConfigure.configure[resId]();
     signal Resource.granted[resId]();
   }
@@ -249,22 +249,14 @@ implementation {
   default async command void ResourceConfigure.unconfigure[uint8_t id]() {
   }
 
-  /* Default commands for the SingleContext interface, to allow for
+  /* Default commands for the SingleActivityResource interface, to allow for
    * optional wiring. */
-  default async command void  ResourceContext.set(act_t newActivity) {}
-  default async command void  ResourceContext.setIdle() {}
+  default async command void  ManagedResource.set(act_t newActivity) {}
+  default async command void  ManagedResource.setIdle() {}
 
-  //default async command void CPUContext.set(act_t newActivity) {}
-  //default async command act_t CPUContext.get() {
+  //default async command void CPUResource.set(act_t newActivity) {}
+  //default async command act_t CPUResource.get() {
   //      return ACT_INVALID;
   //}
 
-  //default async command act_t ResourceContext.get() {}
-  //default async command void  ResourceContext.setLocal(act_type_t newActType) {}
-  //default async command void  ResourceContext.setUnknown() {}
-  //default async command void  ResourceContext.setInvalid() {}
-  //default async command bool  ResourceContext.isValid() {}
-  //default async command void  ResourceContext.bind(act_t newActivity) {}
-  //default async command act_t ResourceContext.enterInterrupt(act_t newActivity) {}
-  //default async command void ResourceContext.exitInterrupt(act_t restoreContext) {}
 }

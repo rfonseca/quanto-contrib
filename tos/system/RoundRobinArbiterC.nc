@@ -84,7 +84,7 @@ generic configuration RoundRobinArbiterC(char resourceName[]) {
     interface ArbiterInfo;
   }
   uses interface ResourceConfigure[uint8_t id];
-  uses interface SingleContext as ResourceContext;
+  uses interface SingleActivityResource as ManagedResource;
 }
 implementation {
   components MainC;
@@ -99,9 +99,9 @@ implementation {
   ArbiterInfo = Arbiter;
   ResourceConfigure = Arbiter;
 
-  components ResourceContextsC; 
-  Arbiter.CPUContext -> ResourceContextsC.CPUContext;
-  ResourceContext = Arbiter.ResourceContext;
+  components QuantoResourcesC; 
+  Arbiter.CPUResource -> QuantoResourcesC.CPUResource;
+  ManagedResource = Arbiter.ManagedResource;
 
   Arbiter.Queue -> Queue;
 }

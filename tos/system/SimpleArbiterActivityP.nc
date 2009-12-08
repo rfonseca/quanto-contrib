@@ -47,11 +47,13 @@
  */
 
 #include "activity.h"
-/* This is just like SimpleArbiter, but it keeps track of the CPUContext.
+/* This is just like SimpleArbiter, but it keeps track of the Quanto 
+ * CPUResource. Resource in this module is the resource that is being
+ * managed, and not a Quanto resource.
  * It needs the number of clients to allocate the array to do that, and
  * because this changed the interface I decided to rename the component.
  * Rodrigo. */ 
-generic module SimpleArbiterContextP(uint8_t num_clients) @safe() {
+generic module SimpleArbiterActivityP(uint8_t num_clients) @safe() {
   provides {
     interface Resource[uint8_t id];
     interface ResourceRequested[uint8_t id];
@@ -60,8 +62,8 @@ generic module SimpleArbiterContextP(uint8_t num_clients) @safe() {
   uses {
     interface ResourceConfigure[uint8_t id];
     interface ResourceQueue as Queue;
-    interface SingleContext as CPUContext; //must be wired
-    interface SingleContext as ResourceContext; //optional
+    interface SingleActivityResource as CPUResource; //must be wired
+    interface SingleActivityResource as ManagedResource; //optional
   }
 }
 implementation {
@@ -69,7 +71,7 @@ implementation {
   enum {RES_IDLE = 0, RES_GRANTING = 1, RES_BUSY = 2};
   enum {NO_RES = 0xFF};
 
-  norace act_t clientContext[num_clients];
+  norace act_t clientActivity[num_clients];
 
   uint8_t state = RES_IDLE;
   norace uint8_t resId = NO_RES;
@@ -90,7 +92,7 @@ implementation {
       else {
         result = call Queue.enqueue(id);
         if (result == SUCCESS)
-           clientContext[id] = call CPUContext.get(); //save context for dequeue
+           clientActivity[id] = call CPUResource.get(); //save activity for dequeue
         return result;
       }
     }
@@ -102,7 +104,7 @@ implementation {
       if(state == RES_IDLE) {
         state = RES_BUSY;
         resId = id;
-        call ResourceContext.set(call CPUContext.get()); //XXX: is this safe here inside atomic?
+        call ManagedResource.set(call CPUResource.get()); //XXX: is this safe here inside atomic?
         call ResourceConfigure.configure[resId]();
         return SUCCESS;
       }
@@ -117,14 +119,14 @@ implementation {
         if(call Queue.isEmpty() == FALSE) {
           resId = NO_RES;
           reqResId = call Queue.dequeue();
-          call CPUContext.set(clientContext[reqResId]); //restores CPUContext
+          call CPUResource.set(clientActivity[reqResId]); //restores CPU activity
           state = RES_GRANTING;
           post grantedTask();
         }
         else {
           resId = NO_RES;
           state = RES_IDLE;
-          call ResourceContext.setIdle();
+          call ManagedResource.setIdle();
         }
         released = TRUE;
       }
@@ -175,7 +177,7 @@ implementation {
       resId = reqResId;
       state = RES_BUSY;
     }
-    call ResourceContext.set(call CPUContext.get());
+    call ManagedResource.set(call CPUResource.get());
     call ResourceConfigure.configure[resId]();
     signal Resource.granted[resId]();
   }
@@ -192,13 +194,13 @@ implementation {
   default async command void ResourceConfigure.unconfigure[uint8_t id]() {
   }
 
-  /* Default commands for the SingleContext interface, to allow for
+  /* Default commands for the SingleActivityResource interface, to allow for
    * optional wiring. */
-  default async command void  ResourceContext.set(act_t newContext) {}
-  default async command void  ResourceContext.setIdle() {}
+  default async command void  ManagedResource.set(act_t newActivity) {}
+  default async command void  ManagedResource.setIdle() {}
 
-  //default async command void CPUContext.set(act_t newContext) {}
-  //default async command act_t CPUContext.get() {
+  //default async command void CPUResource.set(act_t newActivity) {}
+  //default async command act_t CPUResource.get() {
   //      return ACT_INVALID;
   //}
 }

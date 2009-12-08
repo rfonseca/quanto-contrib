@@ -40,13 +40,13 @@ module LedsP @safe() {
     interface GeneralIO as Led1;
     interface GeneralIO as Led2;
 
-    interface SingleContext as CPUContext;
+    interface SingleActivityResource as CPUResource;
+    interface MultiActivityResource as Led0Resource;
+    interface MultiActivityResource as Led1Resource;
+    interface MultiActivityResource as Led2Resource;
     interface PowerState as Led0PowerState;
     interface PowerState as Led1PowerState;
     interface PowerState as Led2PowerState;
-    interface MultiContext as Led0Context;
-    interface MultiContext as Led1Context;
-    interface MultiContext as Led2Context;
   }
 }
 implementation {
@@ -69,14 +69,14 @@ implementation {
   dbg("LedsC", "LEDS: Led" #n " %s.\n", call Led ## n .get() ? "off" : "on");
 
   async command void Leds.led0On() {
-    call Led0Context.add(call CPUContext.get());
+    call Led0Resource.add(call CPUResource.get());
     call Led0PowerState.set(1);
     call Led0.clr();
     DBGLED(0);
   }
 
   async command void Leds.led0Off() {
-    call Led0Context.setIdle();
+    call Led0Resource.setIdle();
     call Led0PowerState.set(0);
     call Led0.set();
     DBGLED(0);
@@ -89,14 +89,14 @@ implementation {
   }
 
   async command void Leds.led1On() {
-    call Led1Context.add(call CPUContext.get());
+    call Led1Resource.add(call CPUResource.get());
     call Led1PowerState.set(1);
     call Led1.clr();
     DBGLED(1);
   }
 
   async command void Leds.led1Off() {
-    call Led1Context.setIdle();
+    call Led1Resource.setIdle();
     call Led1PowerState.set(0);
     call Led1.set();
     DBGLED(1);
@@ -109,14 +109,14 @@ implementation {
   }
 
   async command void Leds.led2On() {
-    call Led2Context.add(call CPUContext.get());
+    call Led2Resource.add(call CPUResource.get());
     call Led2PowerState.set(1);
     call Led2.clr();
     DBGLED(2);
   }
 
   async command void Leds.led2Off() {
-    call Led2Context.setIdle();
+    call Led2Resource.setIdle();
     call Led2PowerState.set(0);
     call Led2.set();
     DBGLED(2);

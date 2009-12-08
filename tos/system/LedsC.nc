@@ -44,14 +44,14 @@ implementation {
   LedsP.Led1 -> PlatformLedsC.Led1;
   LedsP.Led2 -> PlatformLedsC.Led2;
 
-  components ResourceContextsC;
-  LedsP.CPUContext -> ResourceContextsC.CPUContext;
-  LedsP.Led0Context -> ResourceContextsC.Led0Context;
-  LedsP.Led1Context -> ResourceContextsC.Led1Context;
-  LedsP.Led2Context -> ResourceContextsC.Led2Context;
-  LedsP.Led0PowerState -> ResourceContextsC.Led0PowerState;
-  LedsP.Led1PowerState -> ResourceContextsC.Led1PowerState;
-  LedsP.Led2PowerState -> ResourceContextsC.Led2PowerState;
+  components QuantoResourcesC;
+  LedsP.CPUResource -> QuantoResourcesC.CPUResource;
+  LedsP.Led0Resource -> QuantoResourcesC.Led0Resource;
+  LedsP.Led1Resource -> QuantoResourcesC.Led1Resource;
+  LedsP.Led2Resource -> QuantoResourcesC.Led2Resource;
+  LedsP.Led0PowerState -> QuantoResourcesC.Led0PowerState;
+  LedsP.Led1PowerState -> QuantoResourcesC.Led1PowerState;
+  LedsP.Led2PowerState -> QuantoResourcesC.Led2PowerState;
 
 }
 
