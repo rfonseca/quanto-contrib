@@ -10,9 +10,9 @@ implementation {
     QLog.ReportTask -> TinySchedulerC.TaskQuanto[unique("TinySchedulerC.TaskQuanto")];
     QLog.ActivityType -> ActivityTypeP;
       
-    components SingleContextTrackC;
+    components SingleActivityResourceTrackC;
 
-    QLog.SingleActivityResourceTrack -> SingleContextTrackC;
+    QLog.SingleActivityResourceTrack -> SingleActivityResourceTrackC;
 
     components SerialActiveMessageC as AM;
     QLog.WriterControl -> AM;

@@ -6,9 +6,9 @@ implementation {
     components MainC;
     components QuantoLogCompressedMyUartWriterP as QLog;
     components TinySchedulerC;
-    components ResourceContextsC;
+    components QuantoResourcesC;
 
-    QLog.CPUContext -> ResourceContextsC.CPUContext;
+    QLog.CPUResource -> QuantoResourcesC.CPUResource;
 
     QLog.Boot -> MainC;
     QLog.CompressTask -> TinySchedulerC.TaskQuanto[unique("TinySchedulerC.TaskQuanto")];
@@ -30,12 +30,12 @@ implementation {
     QLog.WriterInit -> MyVSerialWriterC;
     QLog.WriterControl -> MyVSerialWriterC;
 
-    components SingleContextTrackC;
-    components MultiContextTrackC;
+    components SingleActivityResourceTrackC;
+    components MultiActivityResourceTrackC;
     components PowerStateTrackC;
 
-    QLog.SingleContextTrack -> SingleContextTrackC;
-    QLog.MultiContextTrack -> MultiContextTrackC;
+    QLog.SingleActivityResourceTrack -> SingleActivityResourceTrackC;
+    QLog.MultiActivityResourceTrack -> MultiActivityResourceTrackC;
     QLog.PowerStateTrack -> PowerStateTrackC;
 
     components Counter32khz32C as Counter;

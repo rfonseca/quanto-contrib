@@ -13,12 +13,12 @@ implementation {
     QLog.PortWriter -> PortWriterC;    
     
 
-    components SingleContextTrackC;
-    components MultiContextTrackC;
+    components SingleActivityResourceTrackC;
+    components MultiActivityResourceTrackC;
     components PowerStateTrackC;
 
-    QLog.SingleContextTrack -> SingleContextTrackC;
-    QLog.MultiContextTrack -> MultiContextTrackC;
+    QLog.SingleActivityResourceTrack -> SingleActivityResourceTrackC;
+    QLog.MultiActivityResourceTrack -> MultiActivityResourceTrackC;
     QLog.PowerStateTrack -> PowerStateTrackC;
 
     components Counter32khz32C as Counter;

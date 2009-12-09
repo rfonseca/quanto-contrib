@@ -25,12 +25,12 @@ enum {
     MULTI_CHG_IDL = 3,
  
     //"Exported" constants
-    //Context changes for single-context resources
+    //Activity changes for single-activity resources
     TYPE_SINGLE_CHG_NORMAL    = (MSG_TYPE_SINGLE_CHG << MSG_TYPE_OFFSET) | SINGLE_CHG_NORMAL,
     TYPE_SINGLE_CHG_ENTER_INT = (MSG_TYPE_SINGLE_CHG << MSG_TYPE_OFFSET) | SINGLE_CHG_ENTER_INT,
     TYPE_SINGLE_CHG_EXIT_INT  = (MSG_TYPE_SINGLE_CHG << MSG_TYPE_OFFSET) | SINGLE_CHG_EXIT_INT,
     TYPE_SINGLE_CHG_BIND      = (MSG_TYPE_SINGLE_CHG << MSG_TYPE_OFFSET) | SINGLE_CHG_BIND,
-    //Context changes for multi-context resources
+    //Activity changes for multi-activity resources
     TYPE_MULTI_CHG_ADD = (MSG_TYPE_MULTI_CHG << MSG_TYPE_OFFSET) | MULTI_CHG_ADD,
     TYPE_MULTI_CHG_REM = (MSG_TYPE_MULTI_CHG << MSG_TYPE_OFFSET) | MULTI_CHG_REM,
     TYPE_MULTI_CHG_IDL = (MSG_TYPE_MULTI_CHG << MSG_TYPE_OFFSET) | MULTI_CHG_IDL,

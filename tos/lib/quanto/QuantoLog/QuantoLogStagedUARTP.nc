@@ -10,8 +10,8 @@ module QuantoLogStagedUARTP {
         interface QuantoLog;
     }
     uses {
-        interface SingleContextTrack[uint8_t global_res_id];
-        interface MultiContextTrack[uint8_t global_res_id];
+        interface SingleActivityResourceTrack[uint8_t global_res_id];
+        interface MultiActivityResourceTrack[uint8_t global_res_id];
         interface PowerStateTrack[uint8_t global_res_id];
         //interface Leds;
         //interface Timer<TMilli> as ReportTimer;
@@ -120,43 +120,43 @@ implementation {
 
 
     async event void 
-    SingleContextTrack.changed[uint8_t id](act_t old_activity, act_t new_activity) 
+    SingleActivityResourceTrack.changed[uint8_t id](act_t old_activity, act_t new_activity) 
     {
         recordChange(id, new_activity, TYPE_SINGLE_CHG_NORMAL);
     }
 
     async event void 
-    SingleContextTrack.bound[uint8_t id](act_t old_activity, act_t new_activity) 
+    SingleActivityResourceTrack.bound[uint8_t id](act_t old_activity, act_t new_activity) 
     {
         recordChange(id, new_activity, TYPE_SINGLE_CHG_BIND);
     }
 
     async event void 
-    SingleContextTrack.enteredInterrupt[uint8_t id](act_t old_activity, act_t new_activity) 
+    SingleActivityResourceTrack.enteredInterrupt[uint8_t id](act_t old_activity, act_t new_activity) 
     {
         recordChange(id, new_activity, TYPE_SINGLE_CHG_ENTER_INT);
     }
 
     async event void 
-    SingleContextTrack.exitedInterrupt[uint8_t id](act_t old_activity, act_t new_activity) 
+    SingleActivityResourceTrack.exitedInterrupt[uint8_t id](act_t old_activity, act_t new_activity) 
     {
         recordChange(id, new_activity, TYPE_SINGLE_CHG_EXIT_INT);
     }
    
     async event void
-    MultiContextTrack.added[uint8_t id](act_t activity)
+    MultiActivityResourceTrack.added[uint8_t id](act_t activity)
     {
         recordChange(id, activity, TYPE_MULTI_CHG_ADD);
     }
 
     async event void
-    MultiContextTrack.removed[uint8_t id](act_t activity)
+    MultiActivityResourceTrack.removed[uint8_t id](act_t activity)
     {
         recordChange(id, activity, TYPE_MULTI_CHG_REM);
     }
 
     async event void
-    MultiContextTrack.idle[uint8_t id]()
+    MultiActivityResourceTrack.idle[uint8_t id]()
     {
         recordChange(id, m_act_idle, TYPE_MULTI_CHG_IDL);
     }

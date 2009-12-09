@@ -6,8 +6,8 @@
  */
 module QuantoLogP {
     uses {
-        interface SingleContextTrack[uint8_t global_res_id];
-        interface MultiContextTrack[uint8_t global_res_id];
+        interface SingleActivityResourceTrack[uint8_t global_res_id];
+        interface MultiActivityResourceTrack[uint8_t global_res_id];
         interface Debug;
         interface Leds;
         interface Timer<TMilli> as ReportTimer;
@@ -78,43 +78,43 @@ implementation {
     }
 
     async event void 
-    SingleContextTrack.changed[uint8_t id](act_t old_context, act_t new_context) 
+    SingleActivityResourceTrack.changed[uint8_t id](act_t old_context, act_t new_context) 
     {
         recordChange(id, old_context, new_context, TYPE_NORMAL);
     }
 
     async event void 
-    SingleContextTrack.bound[uint8_t id](act_t old_context, act_t new_context) 
+    SingleActivityResourceTrack.bound[uint8_t id](act_t old_context, act_t new_context) 
     {
         recordChange(id, old_context, new_context, TYPE_BIND);
     }
 
     async event void 
-    SingleContextTrack.enteredInterrupt[uint8_t id](act_t old_context, act_t new_context) 
+    SingleActivityResourceTrack.enteredInterrupt[uint8_t id](act_t old_context, act_t new_context) 
     {
         recordChange(id, old_context, new_context, TYPE_ENTER_INT);
     }
 
     async event void 
-    SingleContextTrack.exitedInterrupt[uint8_t id](act_t old_context, act_t new_context) 
+    SingleActivityResourceTrack.exitedInterrupt[uint8_t id](act_t old_context, act_t new_context) 
     {
         recordChange(id, old_context, new_context, TYPE_EXIT_INT);
     }
    
     async event void
-    MultiContextTrack.added[uint8_t id](act_t context)
+    MultiActivityResourceTrack.added[uint8_t id](act_t context)
     {
         recordChange(id, 0, context, TYPE_M_ADD);
     }
 
     async event void
-    MultiContextTrack.removed[uint8_t id](act_t context)
+    MultiActivityResourceTrack.removed[uint8_t id](act_t context)
     {
         recordChange(id, 0, context, TYPE_M_REM);
     }
 
     async event void
-    MultiContextTrack.idle[uint8_t id]()
+    MultiActivityResourceTrack.idle[uint8_t id]()
     {
         recordChange(id, 0, 0, TYPE_M_IDL);
     }
@@ -141,10 +141,10 @@ implementation {
         report_index = 0;
         state = S_REP_LOG;
 #ifdef TOSSIM
-        dbg("QuantoLogger", "%d ctx changes", c);
+        dbg("QuantoLogger", "%d act changes", c);
 #else
         call Debug.sendDbg("");
-        call Debug.sendDbg(nprintf2(dbgmessage, "%u ctx changes", c));
+        call Debug.sendDbg(nprintf2(dbgmessage, "%u act changes", c));
         call ReportTimer.startPeriodic(1500);
 #endif
         return SUCCESS;

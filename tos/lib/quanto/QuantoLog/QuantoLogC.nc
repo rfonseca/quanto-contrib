@@ -5,11 +5,11 @@ implementation {
     components QuantoLogP;
     QuantoLog =  QuantoLogP; 
 
-    components SingleContextTrackC;
-    components MultiContextTrackC;
+    components SingleActivityResourceTrackC;
+    components MultiActivityResourceTrackC;
     components PowerStateTrackC;
-    QuantoLogP.SingleContextTrack -> SingleContextTrackC;
-    QuantoLogP.MultiContextTrack -> MultiContextTrackC;
+    QuantoLogP.SingleActivityResourceTrack -> SingleActivityResourceTrackC;
+    QuantoLogP.MultiActivityResourceTrack -> MultiActivityResourceTrackC;
 
     components DebugC;
     QuantoLogP.Debug -> DebugC;

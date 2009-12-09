@@ -18,8 +18,8 @@
 
 module QuantoLogCompressedMyUartWriterP {
     uses {
-        interface SingleContextTrack[uint8_t global_res_id];
-        interface MultiContextTrack[uint8_t global_res_id];
+        interface SingleActivityResourceTrack[uint8_t global_res_id];
+        interface MultiActivityResourceTrack[uint8_t global_res_id];
         interface PowerStateTrack[uint8_t global_res_id];
 
         interface Counter<T32khz,uint32_t> as Counter;
@@ -33,7 +33,7 @@ module QuantoLogCompressedMyUartWriterP {
         interface Init as WriterInit;
         interface SplitControl as WriterControl;
 
-        interface SingleContext as CPUContext;
+        interface SingleActivityResource as CPUResource;
       
         interface BitBuffer;
         interface MoveToFront;
@@ -262,7 +262,7 @@ implementation {
                 ((uint16_t)(call MoveToFront.encode(m))) + 1
             );
         }
-        call CPUContext.set(act_quanto_write);
+        call CPUResource.set(act_quanto_write);
         call PortWriter.write(m_bitbuf_bytes, call BitBuffer.getNBytes());
     }
 
@@ -281,19 +281,19 @@ implementation {
     }
 
     async event void 
-    SingleContextTrack.changed[uint8_t id](act_t old_activity, act_t new_activity) 
+    SingleActivityResourceTrack.changed[uint8_t id](act_t old_activity, act_t new_activity) 
     {
         recordChange(id, new_activity, TYPE_SINGLE_CHG_NORMAL);
     }
 
     async event void 
-    SingleContextTrack.bound[uint8_t id](act_t old_activity, act_t new_activity) 
+    SingleActivityResourceTrack.bound[uint8_t id](act_t old_activity, act_t new_activity) 
     {
         recordChange(id, new_activity, TYPE_SINGLE_CHG_BIND);
     }
 
     async event void 
-    SingleContextTrack.enteredInterrupt[uint8_t id](act_t old_activity, act_t new_activity) 
+    SingleActivityResourceTrack.enteredInterrupt[uint8_t id](act_t old_activity, act_t new_activity) 
     {
         if (ignoreInterrupt(new_activity)) {
             atomic s_masking_int = 1;
@@ -303,7 +303,7 @@ implementation {
     }
 
     async event void 
-    SingleContextTrack.exitedInterrupt[uint8_t id](act_t old_activity, act_t new_activity) 
+    SingleActivityResourceTrack.exitedInterrupt[uint8_t id](act_t old_activity, act_t new_activity) 
     {
         atomic {
             if (s_masking_int) {
@@ -315,19 +315,19 @@ implementation {
     }
    
     async event void
-    MultiContextTrack.added[uint8_t id](act_t activity)
+    MultiActivityResourceTrack.added[uint8_t id](act_t activity)
     {
         recordChange(id, activity, TYPE_MULTI_CHG_ADD);
     }
 
     async event void
-    MultiContextTrack.removed[uint8_t id](act_t activity)
+    MultiActivityResourceTrack.removed[uint8_t id](act_t activity)
     {
         recordChange(id, activity, TYPE_MULTI_CHG_REM);
     }
 
     async event void
-    MultiContextTrack.idle[uint8_t id]()
+    MultiActivityResourceTrack.idle[uint8_t id]()
     {
         recordChange(id, m_act_idle, TYPE_MULTI_CHG_IDL);
     }
