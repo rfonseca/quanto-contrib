@@ -39,7 +39,7 @@ generic module VirtualizeTimerP(typedef precision_tag, int max_timers) @safe()
 {
   provides interface Timer<precision_tag> as Timer[uint8_t num];
   uses interface Timer<precision_tag> as TimerFrom;
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
 }
 implementation
 {
@@ -67,7 +67,7 @@ implementation
   void fireTimers(uint32_t now)
   {
     uint8_t num;
-    act_t c = call CPUContext.get();
+    act_t c = call CPUResource.get();
 
     for (num=0; num < NUM_TIMERS; num++)
       {
@@ -84,9 +84,9 @@ implementation
                 else // Update timer for next event
                   timer->t0 += timer->dt;
 
-                call CPUContext.set(timer->act); //push
+                call CPUResource.set(timer->act); //push
                 signal Timer.fired[num]();
-                call CPUContext.set(c);            //pop
+                call CPUResource.set(c);            //pop
                 break;
               }
           }
@@ -135,7 +135,7 @@ implementation
   
   event void TimerFrom.fired()
   {
-    call CPUContext.bind(mk_act_local(QUANTO_ACTIVITY(TIMER)));
+    call CPUResource.bind(mk_act_local(QUANTO_ACTIVITY(TIMER)));
     fireTimers(call TimerFrom.getNow());
   }
 
@@ -146,16 +146,16 @@ implementation
     timer->dt = dt;
     timer->isoneshot = isoneshot;
     timer->isrunning = TRUE;
-    timer->act = call CPUContext.get();
-    call CPUContext.set(mk_act_local(QUANTO_ACTIVITY(TIMER)));
+    timer->act = call CPUResource.get();
+    call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(TIMER)));
     post updateFromTimer();
-    call CPUContext.set(timer->act);
+    call CPUResource.set(timer->act);
     //if timer->act isValid
     //TimerFrom.Context.add(timer->act)
     // This is the place to add the timer->act to the 
     // underlying shared resource. This resource is visible
-    // here as TimerFrom. There should be a MultipleContextResource
-    // exported to this module so we can add the contexts to it.
+    // here as TimerFrom. There should be a MultiActivityResource
+    // exported to this module so we can add the activities to it.
   }
 
   command void Timer.startPeriodic[uint8_t num](uint32_t dt)

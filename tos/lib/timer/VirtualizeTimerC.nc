@@ -39,11 +39,11 @@ generic configuration VirtualizeTimerC(typedef precision_tag, int max_timers)
 }
 implementation
 {
-  components new VirtualizeTimerP(precision_tag, max_timers), ResourceContextsC;
+  components new VirtualizeTimerP(precision_tag, max_timers), QuantoResourcesC;
   
   Timer = VirtualizeTimerP;
   TimerFrom = VirtualizeTimerP;
 
-  VirtualizeTimerP.CPUContext -> ResourceContextsC.CPUContext;
+  VirtualizeTimerP.CPUResource -> QuantoResourcesC.CPUResource;
 }
 
