@@ -65,8 +65,8 @@ module CC2420ReceiveP @safe() {
 
   uses interface Leds;
 
-  uses interface SingleContext as RadioContext;
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as RadioResource;
+  uses interface SingleActivityResource as CPUResource;
   uses interface PowerState as RadioPowerState;
 }
 
@@ -109,8 +109,8 @@ implementation {
   
   cc2420_receive_state_t m_state;
 
-  /** Context */
-  act_t m_pxy_rx_ctx;
+  /** Quanto */
+  act_t m_pxy_rx_act;
   
   /***************** Prototypes ****************/
   void reset_state();
@@ -125,7 +125,7 @@ implementation {
   /***************** Init Commands ****************/
   command error_t Init.init() {
     m_p_rx_buf = &m_rx_buf;
-    m_pxy_rx_ctx = mk_act_local(QUANTO_ACTIVITY(PXY_CC2420_RX));
+    m_pxy_rx_act = mk_act_local(QUANTO_ACTIVITY(PXY_CC2420_RX));
     return SUCCESS;
   }
 
@@ -187,7 +187,7 @@ implementation {
   /***************** InterruptFIFOP Events ****************/
   async event void InterruptFIFOP.fired() {
     if ( m_state == S_STARTED ) {
-      call CPUContext.bind(m_pxy_rx_ctx);
+      call CPUResource.bind(m_pxy_rx_act);
       beginReceive();
       
     } else {
@@ -243,7 +243,7 @@ implementation {
             atomic receivingPacket = FALSE;
             call CSN.set();
             call RadioPowerState.unsetBits(CC2420_PW_RXFIFO);
-            call RadioContext.setIdle();
+            call RadioResource.setIdle();
             call SpiResource.release();
             waitForNextPacket();
           }
@@ -291,7 +291,7 @@ implementation {
     
     case S_RX_PAYLOAD:
       call CSN.set();        
-      call RadioContext.setIdle();
+      call RadioResource.setIdle();
       call RadioPowerState.unsetBits(CC2420_PW_RXFIFO);
       
       if(!m_missed_packets) {
@@ -336,7 +336,7 @@ implementation {
       atomic receivingPacket = FALSE;
       call CSN.set();
       call RadioPowerState.unsetBits(CC2420_PW_RXFIFO);
-      call RadioContext.setIdle();
+      call RadioResource.setIdle();
       call SpiResource.release();
       break;
       
@@ -405,7 +405,7 @@ implementation {
     call SFLUSHRX.strobe();
     call SFLUSHRX.strobe();
     call CSN.set();
-    call RadioContext.setIdle();
+    call RadioResource.setIdle();
     call SpiResource.release();
     waitForNextPacket();
   }
@@ -418,7 +418,7 @@ implementation {
    */
   void receive() {
     call CSN.clr();
-    call RadioContext.set(m_pxy_rx_ctx);
+    call RadioResource.set(m_pxy_rx_act);
     call RadioPowerState.setBits(CC2420_PW_RXFIFO, 0, CC2420_PW_RXFIFO);
     call RXFIFO.beginRead( (uint8_t*)(call CC2420PacketBody.getHeader( m_p_rx_buf )), 1 );
   }
