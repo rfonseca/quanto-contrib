@@ -1,15 +1,15 @@
 #include <Timer.h>
 #include <UserButton.h>
 
-/* Test App 1 for Context across task invocations
- * Tests the Context module and the CtxBasicSchedulerP module
+/* Test App 1 for Resource across task invocations
+ * Tests the Resource module and the CtxBasicSchedulerP module
  * Two tasks are attributed different contexts A and B, and 
  * alternate rescheduling themselves.
  * The context of a task is preserved and propagated to any task that
  * it posts. 
  */
 
-module TestSingleContextTimerC
+module TestQuantoTimerC
 {
   uses interface Leds;
   uses interface Boot;
@@ -19,16 +19,16 @@ module TestSingleContextTimerC
   uses interface Timer<TMilli> as TimerA;   
   uses interface Timer<TMilli> as TimerB;   
 
-  uses interface SingleContext as CPUContext;
-  uses interface MultiContext as LED0Context;
-  uses interface MultiContext as LED2Context;
+  uses interface SingleActivityResource as CPUResource;
+  uses interface MultiActivityResource as LED0Resource;
+  uses interface MultiActivityResource as LED2Resource;
 }
 implementation
 {
   enum {
-    ACT_MAIN = 1,
-    ACT_A = 2,
-    ACT_B = 3,
+    QUANTO_ACTIVITY(MAIN) = NEW_QUANTO_ACTIVITY_ID,
+    QUANTO_ACTIVITY(A) = NEW_QUANTO_ACTIVITY_ID,
+    QUANTO_ACTIVITY(B) = NEW_QUANTO_ACTIVITY_ID,
   };
 
   enum {
@@ -58,15 +58,15 @@ implementation
 
 
   void start() {
-    act_t old_ctx = call CPUContext.get();
+    act_t old_act = call CPUResource.get();
     call QuantoLog.record();
-    call CPUContext.set(mk_act_local(ACT_A));
+    call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(A)));
     if (remaining) 
         scheduleA();
-    call CPUContext.set(mk_act_local(ACT_B));
+    call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(B)));
     if (remaining)
         scheduleB();
-    call CPUContext.set(old_ctx);
+    call CPUResource.set(old_act);
   }
 
   event void Boot.booted()
@@ -77,13 +77,13 @@ implementation
   event void UserButtonNotify.notify(button_state_t buttonState) {
     if (buttonState == BUTTON_PRESSED) {
         initState();
-        call CPUContext.set(mk_act_local(ACT_MAIN));
+        call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(MAIN)));
         start();
     }
   }
   
   void done() {
-     call CPUContext.set(mk_act_local(ACT_MAIN));
+     call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(MAIN)));
      call QuantoLog.flush();
   }
 
@@ -93,10 +93,10 @@ implementation
     outstanding--;
     if (!ledOn) {
         call Leds.led0On();
-        call LED0Context.add(call CPUContext.get());
+        call LED0Resource.add(call CPUResource.get());
     } else {
         call Leds.led0Off();
-        call LED0Context.remove(call CPUContext.get());
+        call LED0Resource.remove(call CPUResource.get());
     }
     if (remaining)
         scheduleA();
@@ -110,10 +110,10 @@ implementation
     outstanding--;
     if (!ledOn) {
         call Leds.led2On();
-        call LED2Context.add(call CPUContext.get());
+        call LED2Resource.add(call CPUResource.get());
     } else {
         call Leds.led2Off();
-        call LED2Context.remove(call CPUContext.get());
+        call LED2Resource.remove(call CPUResource.get());
     }
     if (remaining)
         scheduleB();
