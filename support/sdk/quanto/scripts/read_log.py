@@ -107,7 +107,7 @@ for entry in entries:
     ic = entry.get_ic()
     if (last_ic - ic > 32768):
 	ic += 65536
-   s += ' icount: ' + str(ic)
+    s += ' icount: ' + str(ic)
     if (type == QuantoLogConstants.MSG_TYPE_SINGLE_CHG or
         type == QuantoLogConstants.MSG_TYPE_MULTI_CHG ):
         s += ' ctx: %s ' % activity(entry.get_arg())
