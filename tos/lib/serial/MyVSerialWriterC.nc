@@ -16,7 +16,7 @@ implementation {
    MyVSerialWriterP.LowerPortWriter -> MySerialWriterC;
    MyVSerialWriterP.LowerInit -> MySerialWriterC;
 
-   components ResourceContextsC, TinySchedulerC;
+   components QuantoResourcesC, TinySchedulerC;
    MyVSerialWriterP.NextSend -> TinySchedulerC.TaskQuanto[unique("TinySchedulerC.TaskQuanto")];
-   MyVSerialWriterP.CPUContext -> ResourceContextsC.CPUContext;
+   MyVSerialWriterP.CPUResource -> QuantoResourcesC.CPUResource;
 }

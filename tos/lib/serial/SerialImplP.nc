@@ -73,7 +73,7 @@ module SerialImplP {
     interface StdControl as SerialControl;
     interface SerialFlush;
 
-    interface SingleContext as CPUContext;
+    interface SingleActivityResource as CPUResource;
   }
 }
 implementation {
@@ -531,7 +531,7 @@ implementation {
         txBuf[TX_DATA_INDEX].state = BUFFER_FILLING;
         txBuf[TX_DATA_INDEX].buf = b;
         not_busy = TRUE;
-        m_activity = call CPUContext.get();
+        m_activity = call CPUResource.get();
       }
     }
     if (not_busy) {
@@ -622,7 +622,7 @@ implementation {
     }
     
     if (send_completed){
-      atomic call CPUContext.bind(m_activity);
+      atomic call CPUResource.bind(m_activity);
       signal SendBytePacket.sendCompleted(result);
     }
     

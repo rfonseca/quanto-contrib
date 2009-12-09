@@ -34,7 +34,7 @@ implementation {
 
   MySerialWriterP.SignalSendDoneTask -> TinySchedulerC.TaskQuanto[unique("TinySchedulerC.TaskQuanto")];
     
-  components ResourceContextsC;
-  MySerialWriterP.CPUContext -> ResourceContextsC.CPUContext;
+  components QuantoResourcesC;
+  MySerialWriterP.CPUResource -> QuantoResourcesC.CPUResource;
 
 }

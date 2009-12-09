@@ -3,7 +3,7 @@ module MySerialWriterP {
     uses {
         interface SendBytePacket;
         interface TaskQuanto as SignalSendDoneTask;
-        interface SingleContext as CPUContext;
+        interface SingleActivityResource as CPUResource;
     }
 }
 
@@ -82,7 +82,7 @@ implementation {
 
   async event void SendBytePacket.sendCompleted(error_t error){
     atomic sendError = error;
-    call SignalSendDoneTask.postTask(call CPUContext.get());
+    call SignalSendDoneTask.postTask(call CPUResource.get());
   }
 
   default event void PortWriter.writeDone(uint8_t *buf, error_t result){

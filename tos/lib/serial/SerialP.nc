@@ -1,4 +1,4 @@
-/* Proxy configuration for SerialImplP, wiring the CPUContext */
+/* Proxy configuration for SerialImplP, wiring the CPUResource */
 configuration SerialP {
 
   provides {
@@ -28,6 +28,6 @@ implementation {
     SerialControl = Impl;
     SerialFlush = Impl;
 
-    components ResourceContextsC;
-    Impl.CPUContext -> ResourceContextsC.CPUContext; 
+    components QuantoResourcesC;
+    Impl.CPUResource -> QuantoResourcesC.CPUResource; 
 }

@@ -20,7 +20,7 @@
  * @author Ben Greenstein
  *
  *  
- *Proxy configuration for QSerialImplP, wiring the CPUContext 
+ *Proxy configuration for LPSerialImplP, wiring the CPUResource 
  */
 configuration LPSerialP {
 
@@ -47,8 +47,8 @@ implementation {
     SerialControl = Impl;
     SerialFlush = Impl;
 
-    components ResourceContextsC;
-    Impl.CPUContext -> ResourceContextsC.CPUContext; 
+    components QuantoResourcesC;
+    Impl.CPUResource -> QuantoResourcesC.CPUResource; 
 
     components TinySchedulerC;
     Impl.RunTxTask -> TinySchedulerC.TaskQuanto[unique("TinySchedulerC.TaskQuanto")];

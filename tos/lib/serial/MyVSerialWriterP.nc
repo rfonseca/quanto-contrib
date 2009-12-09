@@ -7,7 +7,7 @@ module MyVSerialWriterP {
    uses {
       interface PortWriter as LowerPortWriter;
       interface Init as LowerInit;
-      interface SingleContext as CPUContext;
+      interface SingleActivityResource as CPUResource;
       interface TaskQuanto as NextSend; 
    }
 }
@@ -98,7 +98,7 @@ implementation {
          atomic {
             current = nextPacket(current);
             if (current < NUM_CLIENTS) {
-               call NextSend.postTask(call CPUContext.get());
+               call NextSend.postTask(call CPUResource.get());
             }
          }
       } 
@@ -124,7 +124,7 @@ implementation {
             outstanding[pos].length = 0;
             current = nextPacket(pos);
             if (current < NUM_CLIENTS) {
-               call NextSend.postTask(call CPUContext.get());
+               call NextSend.postTask(call CPUResource.get());
             }
          }
       } 
