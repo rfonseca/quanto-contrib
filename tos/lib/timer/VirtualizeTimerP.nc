@@ -151,7 +151,7 @@ implementation
     post updateFromTimer();
     call CPUResource.set(timer->act);
     //if timer->act isValid
-    //TimerFrom.Context.add(timer->act)
+    //TimerFrom.Activity.add(timer->act)
     // This is the place to add the timer->act to the 
     // underlying shared resource. This resource is visible
     // here as TimerFrom. There should be a MultiActivityResource
@@ -172,7 +172,7 @@ implementation
   {
     m_timers[num].isrunning = FALSE;
     //if m_timers[num].act isValid
-    //TimerFrom.Context.remove(m_timers[num].act)
+    //TimerFrom.Activity.remove(m_timers[num].act)
   }
 
   command bool Timer.isRunning[uint8_t num]()
