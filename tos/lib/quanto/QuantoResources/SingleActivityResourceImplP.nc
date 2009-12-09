@@ -49,7 +49,7 @@ implementation {
                 m_activity[res_id] = n;
         } 
         if (n != old)
-            signal SingleActivityResourceTrack.changed[res_id](n);
+            signal SingleActivityResourceTrack.changed[res_id](old, n);
     }
 
     async inline command void SingleActivityResource.setLocal[uint8_t res_id](act_type_t a) {
@@ -64,7 +64,7 @@ implementation {
                 m_activity[res_id] = n;
         } 
         if (n != old)
-            signal SingleActivityResourceTrack.bound[res_id](n);
+            signal SingleActivityResourceTrack.bound[res_id](old, n);
     }
 
 
@@ -77,7 +77,7 @@ implementation {
             old = m_activity[res_id];
             m_activity[res_id] = n;
         }
-        signal SingleActivityResourceTrack.enteredInterrupt[res_id](n);
+        signal SingleActivityResourceTrack.enteredInterrupt[res_id](old, n);
         return old;
     }
 
@@ -91,7 +91,7 @@ implementation {
             old = m_activity[res_id];
             m_activity[res_id] = restore_ctx;
         }
-        signal SingleActivityResourceTrack.exitedInterrupt[res_id](restore_ctx);   
+        signal SingleActivityResourceTrack.exitedInterrupt[res_id](old, restore_ctx);   
     }
 
     async inline command void 
@@ -102,7 +102,7 @@ implementation {
             old = m_activity[res_id];
             m_activity[res_id] = act_local_idle;
         }
-        signal SingleActivityResourceTrack.exitedInterrupt[res_id](act_local_idle);   
+        signal SingleActivityResourceTrack.exitedInterrupt[res_id](old, act_local_idle);   
     }
 
 
