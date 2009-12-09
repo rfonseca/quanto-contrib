@@ -1,8 +1,8 @@
-Documentation of the cc2420 instrumentation with powerstates and context
+Documentation of the cc2420 instrumentation with Quanto
 
-3 Resource Contexts involved:
- - CPUContext
- - CC2420Context as RadioContext
+3 Resources involved:
+ - CPUResource
+ - CC2420Resource as RadioResource
  - CC2420Spi
 
 The Spibus is managed by the CC2420SpiWireC, which is an arbiter, in practice
@@ -18,10 +18,11 @@ There is also a RadioPowerState component, with the following states:
   CC2420_PW_RXFIFO   = 0x2000, //set by CC2420Receive
   CC2420_PW_TXFIFO   = 0x4000, //set by CC2420Transmit
 
+These states are defined in CC2420PowerStates.h and CC2420Quanto.h.
 RX is set on SFD if not transmitting. We have to add the time spent before SFD to this.
 
 The Activity tracking is as follows:
-The RadioContext is painted:
+The RadioResource is painted:
  - with the CPU activity right before TXFIFO.write
 
  - with ACT_PXY_CC2420_RX on receive 

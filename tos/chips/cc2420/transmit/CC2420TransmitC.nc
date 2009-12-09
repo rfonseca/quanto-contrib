@@ -97,8 +97,8 @@ implementation {
   components LedsC;
   CC2420TransmitP.Leds -> LedsC;
 
-  components ResourceContextsC;
-  CC2420TransmitP.CPUContext -> ResourceContextsC.CPUContext;
-  CC2420TransmitP.RadioContext -> ResourceContextsC.CC2420Context;
-  CC2420TransmitP.RadioPowerState -> ResourceContextsC.CC2420PowerState;
+  components QuantoResourcesC;
+  CC2420TransmitP.CPUResource -> QuantoResourcesC.CPUResource;
+  CC2420TransmitP.RadioResource -> QuantoResourcesC.CC2420Resource;
+  CC2420TransmitP.RadioPowerState -> QuantoResourcesC.CC2420PowerState;
 }

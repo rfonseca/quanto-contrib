@@ -74,8 +74,8 @@ module CC2420TransmitP @safe() {
   uses interface CC2420Receive;
   uses interface Leds;
 
-  uses interface SingleContext as CPUContext;
-  uses interface SingleContext as RadioContext;
+  uses interface SingleActivityResource as CPUResource;
+  uses interface SingleActivityResource as RadioResource;
   uses interface PowerState as RadioPowerState;
 }
 
@@ -115,7 +115,7 @@ implementation {
 
   /** Maintains the cpu activity across interrupts */
   act_t m_act;
-  act_t m_pxy_rx_ctx;
+  act_t m_pxy_rx_act;
   
   /** Byte reception/transmission indicator */
   bool sfdHigh;
@@ -146,7 +146,7 @@ implementation {
   
   /***************** Init Commands *****************/
   command error_t Init.init() {
-    m_pxy_rx_ctx = mk_act_local(QUANTO_ACTIVITY(PXY_CC2420_RX));
+    m_pxy_rx_act = mk_act_local(QUANTO_ACTIVITY(PXY_CC2420_RX));
     call CCA.makeInput();
     call CSN.makeOutput();
     call SFD.makeInput();
@@ -270,13 +270,13 @@ implementation {
     atomic {
       time32 = getTime32(time);    
       if (m_act != ACT_INVALID)
-        call CPUContext.bind(m_act);
+        call CPUResource.bind(m_act);
       switch( m_state ) {
         
       case S_SFD:
         m_state = S_EFD;
         sfdHigh = TRUE;
-        //call RadioContext.set(m_act);
+        //call RadioResource.set(m_act);
         call CaptureSFD.captureFallingEdge();
         call PacketTimeStamp.set(m_msg, time32);
         if (call PacketTimeSyncOffset.isSet(m_msg)) {
@@ -303,7 +303,7 @@ implementation {
 
       case S_EFD:
         sfdHigh = FALSE;
-        call RadioContext.setIdle();
+        call RadioResource.setIdle();
         call RadioPowerState.unsetBits(CC2420_PW_TX | CC2420_POWERLEVEL_MASK);
         call CaptureSFD.captureRisingEdge();
         
@@ -325,7 +325,7 @@ implementation {
           call CaptureSFD.captureFallingEdge();
           call CC2420Receive.sfd( time32 );
           m_receiving = TRUE;
-          call RadioContext.set(m_pxy_rx_ctx); 
+          call RadioResource.set(m_pxy_rx_act); 
           call RadioPowerState.setBits(CC2420_PW_RX, 0, CC2420_PW_RX);
           m_prev_time = time;
           if ( call SFD.get() ) {
@@ -338,9 +338,9 @@ implementation {
       	  sfdHigh = FALSE;
           call CaptureSFD.captureRisingEdge();
           m_receiving = FALSE;
-          //call RadioContext.setIdle();  // Rodrigo: This was overlapping with
+          //call RadioResource.setIdle(); // Rodrigo: This was overlapping with
        	                                  // the setting of the
-       		                              // context by the RXFIFO
+       		                          // activity by the RXFIFO
                                           // loop. The radio activity
                                           // in this case is the union
                                           // of the time spent in
@@ -385,7 +385,7 @@ implementation {
         call BackoffTimer.stop();
         //tentative
         if (m_act != ACT_INVALID)
-            call CPUContext.bind(m_act);
+            call CPUResource.bind(m_act);
         
         msg_metadata = call CC2420PacketBody.getMetadata( m_msg );
         ack_buf = (uint8_t *) ack_header;
@@ -420,7 +420,7 @@ implementation {
       call CSN.clr();
       call SFLUSHTX.strobe();
       call CSN.set();
-      call RadioContext.setIdle();
+      call RadioResource.setIdle();
       releaseSpiResource();
       atomic {
         m_state = S_STARTED;
@@ -443,10 +443,10 @@ implementation {
   async event void TXFIFO.writeDone( uint8_t* tx_buf, uint8_t tx_len,
                                      error_t error ) {
 
-    //ctx: done with FIFO. If not CCA, start transmitting now, otherwise 
-    //     set the RadioContext to idle and wait for the actual transmission
+    //[quanto]: done with FIFO. If not CCA, start transmitting now, otherwise 
+    //     set the RadioResource to idle and wait for the actual transmission
     if (m_act != ACT_INVALID)
-      call CPUContext.bind(m_act);
+      call CPUResource.bind(m_act);
     call CSN.set();
     call RadioPowerState.unsetBits(CC2420_PW_TXFIFO);
     if ( m_state == S_CANCEL ) {
@@ -455,7 +455,7 @@ implementation {
         call SFLUSHTX.strobe();
         call CSN.set();
       }
-      call RadioContext.setIdle();
+      call RadioResource.setIdle();
       releaseSpiResource();
       m_state = S_STARTED;
       m_act = ACT_INVALID;
@@ -468,7 +468,7 @@ implementation {
       attemptSend();
       
     } else {
-      call RadioContext.setIdle(); //done with FIFO, will wait for CCA
+      call RadioResource.setIdle(); //done with FIFO, will wait for CCA
       releaseSpiResource();
       atomic {
         m_state = S_SAMPLE_CCA;
@@ -524,7 +524,7 @@ implementation {
         // jiffies. Assume something is wrong.
         call SFLUSHTX.strobe();
         call CaptureSFD.captureRisingEdge();
-        call RadioContext.setIdle();
+        call RadioResource.setIdle();
         call RadioPowerState.unsetBits(CC2420_PW_TX  | CC2420_POWERLEVEL_MASK);
         releaseSpiResource();
         signalDone( ERETRY );
@@ -557,7 +557,7 @@ implementation {
       m_cca = cca;
       m_msg = p_msg;
       totalCcaChecks = 0;
-      m_act = call CPUContext.get(); //store for binding in interrupts
+      m_act = call CPUResource.get(); //store for binding in interrupts
     }
     
     if ( acquireSpiResource() == SUCCESS ) {
@@ -586,7 +586,7 @@ implementation {
       m_cca = cca;
       m_state = cca ? S_SAMPLE_CCA : S_BEGIN_TRANSMIT;
       totalCcaChecks = 0;
-      m_act = call CPUContext.get(); //store for binding in interrupts
+      m_act = call CPUResource.get(); //store for binding in interrupts
     }
     
     if(m_cca) {
@@ -620,7 +620,7 @@ implementation {
     atomic {
       if (m_state == S_CANCEL) {
         call SFLUSHTX.strobe();
-        call RadioContext.setIdle();
+        call RadioResource.setIdle();
         releaseSpiResource();
         call CSN.set();
         m_state = S_STARTED;
@@ -649,7 +649,7 @@ implementation {
       releaseSpiResource();
       congestionBackoff();
     } else {
-      call RadioContext.set(call CPUContext.get());
+      call RadioResource.set(call CPUResource.get());
       call RadioPowerState.setBits(CC2420_PW_TX | CC2420_POWERLEVEL_MASK, 0,
                                    CC2420_PW_TX | m_tx_power);
       call BackoffTimer.start(CC2420_ABORT_PERIOD);
@@ -718,7 +718,7 @@ implementation {
     
     m_tx_power = tx_power;
     
-    call RadioContext.set(call CPUContext.get());
+    call RadioResource.set(call CPUResource.get());
     call RadioPowerState.setBits(CC2420_PW_TXFIFO, 0, CC2420_PW_TXFIFO);
     {
       uint8_t tmpLen __DEPUTY_UNUSED__ = header->length - 1;
@@ -731,7 +731,7 @@ implementation {
     abortSpiRelease = FALSE;
     call ChipSpiResource.attemptRelease();
     m_act = ACT_INVALID;
-    call RadioContext.setIdle();
+    call RadioResource.setIdle();
     signal Send.sendDone( m_msg, err );
   }
 }

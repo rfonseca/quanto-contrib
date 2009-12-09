@@ -66,7 +66,7 @@ implementation {
   components LedsC;
   SpiP.Leds -> LedsC;
 
-  components ResourceContextsC;
-  SpiP.CPUContext -> ResourceContextsC.CPUContext;
-  SpiP.ResourceContext -> ResourceContextsC.CC2420SpiContext;
+  components QuantoResourcesC;
+  SpiP.CPUResource -> QuantoResourcesC.CPUResource;
+  SpiP.ManagedResource -> QuantoResourcesC.CC2420SpiResource;
 }

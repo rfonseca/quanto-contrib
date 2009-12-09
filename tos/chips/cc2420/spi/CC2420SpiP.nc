@@ -56,8 +56,8 @@ module CC2420SpiP @safe() {
     interface State as WorkingState;
     interface Leds;
     
-    interface SingleContext as CPUContext;
-    interface SingleContext as ResourceContext;
+    interface SingleActivityResource as CPUResource;
+    interface SingleActivityResource as ManagedResource;
   }
 }
 
@@ -86,8 +86,8 @@ implementation {
   /** TRUE if it is safe to release the SPI bus after all users say ok */
   bool release;
 
-  /** Holds the CPUContext of the clients that are waiting */
-  act_t m_ctx[RESOURCE_COUNT];
+  /** Holds the CPUResource of the clients that are waiting */
+  act_t m_act[RESOURCE_COUNT];
   
   /***************** Prototypes ****************/
   error_t attemptRelease();
@@ -124,7 +124,7 @@ implementation {
         
       } else {
         m_requests |= 1 << id;
-        m_ctx[id] = call CPUContext.get(); //save context for when granted
+        m_act[id] = call CPUResource.get(); //save activity for when granted
       }
     }
     return SUCCESS;
@@ -163,7 +163,7 @@ implementation {
       m_holder = NO_HOLDER;
       if ( !m_requests ) {
         call WorkingState.toIdle();
-        call ResourceContext.setIdle();
+        call ManagedResource.setIdle();
         attemptRelease();
         
       } else {
@@ -173,7 +173,7 @@ implementation {
           if ( m_requests & ( 1 << i ) ) {
             m_holder = i;
             m_requests &= ~( 1 << i );
-            call CPUContext.set(m_ctx[i]);
+            call CPUResource.set(m_act[i]);
             post grant();
             return SUCCESS;
           }
@@ -369,7 +369,7 @@ implementation {
     atomic { 
       holder = m_holder;
     }
-    call ResourceContext.set(call CPUContext.get());
+    call ManagedResource.set(call CPUResource.get());
     signal Resource.granted[ holder ]();
   }
 
@@ -386,8 +386,8 @@ implementation {
   default async event void ChipSpiResource.releasing() {
   }
   
-  /* Default commands for the SingleContext interface, to allow for
+  /* Default commands for the SingleActivityResource interface, to allow for
    * optional wiring. */
-  //default async command void  ResourceContext.set(act_t newContext) {}
-  //default async command void  ResourceContext.setIdle() {}
+  //default async command void  ManagedResource.set(act_t newActivity) {}
+  //default async command void  ManagedResource.setIdle() {}
 }

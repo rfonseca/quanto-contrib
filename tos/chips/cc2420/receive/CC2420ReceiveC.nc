@@ -78,9 +78,9 @@ implementation {
   CC2420ReceiveP.PacketTimeStamp -> CC2420PacketC;
   CC2420ReceiveP.CC2420Config -> CC2420ControlC;
 
-  components ResourceContextsC;
-  CC2420ReceiveP.CPUContext -> ResourceContextsC.CPUContext;
-  CC2420ReceiveP.RadioContext -> ResourceContextsC.CC2420Context;
-  CC2420ReceiveP.RadioPowerState -> ResourceContextsC.CC2420PowerState;
+  components QuantoResourcesC;
+  CC2420ReceiveP.CPUResource -> QuantoResourcesC.CPUResource;
+  CC2420ReceiveP.RadioResource -> QuantoResourcesC.CC2420Resource;
+  CC2420ReceiveP.RadioPowerState -> QuantoResourcesC.CC2420PowerState;
 
 }

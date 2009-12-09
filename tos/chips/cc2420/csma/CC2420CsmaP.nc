@@ -51,8 +51,8 @@ module CC2420CsmaP @safe() {
   uses interface CC2420PacketBody;
   uses interface State as SplitControlState;
 
-  uses interface SingleContext as CPUContext;
-  uses interface SingleContext as RadioContext;
+  uses interface SingleActivityResource as CPUResource;
+  uses interface SingleActivityResource as RadioResource;
   uses interface PowerState as RadioPowerState;
 }
 
@@ -82,7 +82,7 @@ implementation {
 
   /***************** SplitControl Commands ****************/
   command error_t SplitControl.start() {
-    //call RadioContext.set(call CPUContext.get());
+    //call RadioResource.set(call CPUResource.get());
     if(call SplitControlState.requestState(S_STARTING) == SUCCESS) {
       //call RadioPowerState.set(CC2420_PW_STARTING); //clear all other bits
       call CC2420Power.startVReg();
