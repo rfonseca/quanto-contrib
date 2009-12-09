@@ -1,6 +1,15 @@
 This is a README with the differences between Quanto 1.5b and Quanto 1.0.
 
 Summary of Changes in Quanto 1.5
+ 0. Removed all references to 'Context'.
+    CPUContext -> CPUResource
+    CC2420Context -> CC2420Resource
+    LED0Context -> LED0Resource
+    ...
+    SingleContext -> SingleActivityResource
+    MultiContext -> MultiActivityResource
+    ResourceContextsC -> QuantoResourcesC
+
  1.Automatic activity and resource ids: no need for the instrumenter to create
    different ACTIVITY and RESOURCE ids, this is handled automatically at
    compile time. The parsing tools automatically get the mappings from the 
