@@ -1,6 +1,10 @@
 Example of Bounce using QuantoLogStagedMyUARTC(QLOG_CONTINUOUS) as a logger.
 This logger does not signal full and does auto-flushing.
 
+The effect is that we have a period of time in which we are logging to memory
+with little overhead, and a period of time in which we are not logging
+any quanto messages, just flushing to the UART.
+
 Simple application that involves two nodes.
 
 * Program 2 nodes, one with id 1 and the other with id 32.
@@ -15,7 +19,7 @@ CPU context, at startup, to <NODE>:unknown.
 This should be enough to show when the CPU was busy doing things on behalf of
 the packet sent by node 1 and by node 2.
 
-Todo: debug the receive "paining". Currently see add,add,rm,rm
+Todo: debug the receive "paitning". Currently see add,add,rm,rm
 ----------------------
 Experiments: see sample-runs/README
 --------------------

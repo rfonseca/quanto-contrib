@@ -22,7 +22,6 @@ implementation
     components new AMSenderC(AM_BOUNCEPACKET);
     components new AMReceiverC(AM_BOUNCEPACKET);
     
-    components ResourceContextsC;
 
     Bounce.Boot -> MainC;
     Bounce.Random -> RandomC;
@@ -40,7 +39,8 @@ implementation
     Bounce.QuantoLog -> CLog;
     Bounce.UserButtonNotify -> UserButtonC;
 
-    Bounce.CPUContext -> ResourceContextsC.CPUContext;
+    components QuantoResourcesC;
+    Bounce.CPUResource -> QuantoResourcesC.CPUResource;
 
     components CC2420ActiveMessageC;
     Bounce.RadioBackoff -> CC2420ActiveMessageC.RadioBackoff[AM_BOUNCEPACKET];

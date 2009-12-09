@@ -60,8 +60,8 @@ implementation {
   App.MilliTimer -> TimerMilliC;
   App.Packet -> AMSenderC;
 
-  components ResourceContextsC;
-  App.CPUContext -> ResourceContextsC.CPUContext;
+  components QuantoResourcesC;
+  App.CPUResource -> QuantoResourcesC.CPUResource;
 
   //components QuantoLogCompressedMyUartWriterC;
   //components QuantoLogMyUARTWriterC;

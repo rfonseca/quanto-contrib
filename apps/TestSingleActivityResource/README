@@ -1,6 +1,6 @@
-This is a simple test that only has tasks carrying around context.
-It is a test to make sure the SingleContext implementation works, even though it
-only uses the CPUContext.
+This is a simple test that only has tasks carrying around activities.
+It is a test to make sure the SingleActivityResource implementation works, even though it
+only uses the CPUResource.
 
 The application has three 'activities': main, a, b. A and B alternate to do some
 work, and the first one to finish returns to the main activity.

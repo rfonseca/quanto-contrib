@@ -16,7 +16,7 @@ module TestLplC {
         interface Receive;
         interface SplitControl as AMControl;
         interface Leds;
-        interface SingleContext as CPUContext;
+        interface SingleActivityResource as CPUResource;
 
         interface LowPowerListening;
     }
@@ -24,8 +24,13 @@ module TestLplC {
 implementation {
 
     uint8_t state;
-    enum {S_STARTED, S_FULL, S_FLUSHING, S_IDLE, ACT_MAIN=21};
-    //0,1,2,3
+    enum {
+          S_STARTED = 0,
+	  S_FULL, 
+          S_FLUSHING, 
+          S_IDLE, 
+          QUANTO_ACTIVITY(MAIN) = NEW_QUANTO_ACTIVITY_ID,
+    };
    
     /* Entering different states */
     void start() {
@@ -59,7 +64,7 @@ implementation {
  
 
     event void Boot.booted() {
-        call CPUContext.set(mk_act_local(ACT_MAIN));
+        call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(MAIN)));
         call AMControl.start();
     }
 

@@ -46,8 +46,8 @@ module TestUART2C
   uses interface Timer<TMilli> as Timer;
   uses interface Leds;
   uses interface Boot;
-  //Context stuff
-  uses interface SingleContext as CPUContext;
+  //Quanto stuff
+  uses interface SingleActivityResource as CPUResource;
   uses interface Notify<button_state_t> as UserButtonNotify;
   uses interface QuantoLog;
   uses interface AMSend as UARTSend;
@@ -63,7 +63,7 @@ implementation
   uint8_t *payload;
      
   enum { 
-   ACT_TYPE_APP = 1,
+   QUANTO_ACTIVITY(APP) = NEW_QUANTO_ACTIVITY_ID,
   };
 
   task void send();
@@ -71,7 +71,7 @@ implementation
   void start() {
     count = 0;
     call QuantoLog.record();
-    call CPUContext.set(mk_act_local(ACT_TYPE_QUANTO));
+    call CPUContext.set(mk_act_local(QUANTO_ACTIVITY(APP)));
     post send();
   }
 
@@ -98,7 +98,7 @@ implementation
   task void send() 
   {
       //act_t current = call CPUContext.get();
-      //call CPUContext.set(ACT_TYPE_QUANTO);
+      //call CPUContext.set(QUANTO_ACTIVITY(APP)));
       call UARTSend.send(AM_BROADCAST_ADDR, &uart_msg, len[count]);
       //call CPUContext.set(current);
   }

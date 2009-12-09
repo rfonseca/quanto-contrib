@@ -56,12 +56,12 @@ implementation
   BlinkC.Timer2 -> Timer2;
   BlinkC.Leds -> LedsC;
 
-  components ResourceContextsC;
+  components QuantoResourcesC;
   components new QuantoLogStagedMyUARTC(QLOG_ONESHOT) as QuantoLog;
   //components new QuantoLogStagedMyUARTC(QLOG_CONTINUOUS) as QuantoLog;
   //components QuantoLogDummy as QuantoLog;
   components UserButtonC;
-  BlinkC.CPUContext -> ResourceContextsC.CPUContext;
+  BlinkC.CPUResource -> QuantoResourcesC.CPUResource;
   BlinkC.QuantoLog -> QuantoLog;
   BlinkC.UserButtonNotify -> UserButtonC;
 }

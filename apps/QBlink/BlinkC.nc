@@ -44,8 +44,8 @@ module BlinkC
   uses interface Timer<TMilli> as Timer2;
   uses interface Leds;
   uses interface Boot;
-  //Context stuff
-  uses interface SingleContext as CPUContext;
+  //Quanto stuff
+  uses interface SingleActivityResource as CPUResource;
   uses interface Notify<button_state_t> as UserButtonNotify;
   uses interface QuantoLog;
 }
@@ -63,11 +63,11 @@ implementation
   };
 
   void startBlinking() {
-    call CPUContext.set(mk_act_local(ACT_RED));
+    call CPUResource.set(mk_act_local(ACT_RED));
     call Timer0.startPeriodic( BASE_PERIOD );
-    call CPUContext.set(mk_act_local(ACT_GREEN));
+    call CPUResource.set(mk_act_local(ACT_GREEN));
     call Timer1.startPeriodic( BASE_PERIOD<<1 );
-    call CPUContext.set(mk_act_local(ACT_BLUE));
+    call CPUResource.set(mk_act_local(ACT_BLUE));
     call Timer2.startPeriodic( BASE_PERIOD<<2 );
  
   }

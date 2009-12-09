@@ -1,20 +1,20 @@
 #include <Timer.h>
 
-configuration TestSingleContextAppC
+configuration TestSingleActivityResourceAppC
 {
 }
 implementation
 {
-  components MainC, TestSingleContextC, LedsC, RandomC;
+  components MainC, TestSingleActivityResourceC, LedsC, RandomC;
   components UserButtonC;
   components QuantoLogRawUARTC as CLog;
-  components ResourceContextsC;
+  components QuantoResourcesC;
 
-  TestSingleContextC -> MainC.Boot;
+  TestSingleActivityResourceC -> MainC.Boot;
 
-  TestSingleContextC.Leds -> LedsC;
-  TestSingleContextC.Random -> RandomC;
-  TestSingleContextC.CPUContext -> ResourceContextsC.CPUContext;
-  TestSingleContextC.QuantoLog -> CLog;
-  TestSingleContextC.UserButtonNotify -> UserButtonC;
+  TestSingleActivityResourceC.Leds -> LedsC;
+  TestSingleActivityResourceC.Random -> RandomC;
+  TestSingleActivityResourceC.CPUResource -> QuantoResourcesC.CPUResource;
+  TestSingleActivityResourceC.QuantoLog -> CLog;
+  TestSingleActivityResourceC.UserButtonNotify -> UserButtonC;
 }

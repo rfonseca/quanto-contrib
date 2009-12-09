@@ -47,8 +47,8 @@ module TestUARTC
   uses interface Timer<TMilli> as Timer;
   uses interface Leds;
   uses interface Boot;
-  //Context stuff
-  uses interface SingleContext as CPUContext;
+  //Quanto stuff
+  uses interface SingleActivityResource as CPUResource;
   uses interface Notify<button_state_t> as UserButtonNotify;
   uses interface QuantoLog;
   uses interface AMSend as UARTSend;
@@ -64,7 +64,7 @@ implementation
   uint8_t *payload;
      
   enum { 
-   ACT_TYPE_APP = 1,
+   QUANTO_ACTIVITY(APP) = NEW_QUANTO_ACTIVITY_ID,
   };
 
   void start() {
@@ -84,7 +84,7 @@ implementation
 
   event void UserButtonNotify.notify(button_state_t buttonState) {
     if (buttonState == BUTTON_PRESSED) {
-        call CPUContext.set(mk_act_local(ACT_TYPE_APP));
+        call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(APP)));
         start();
     }
   }
@@ -98,10 +98,10 @@ implementation
   {
     if (count <= total) {
         if (count > 0) {
-          act_t current = call CPUContext.get();
-          call CPUContext.set(ACT_TYPE_QUANTO);
+          act_t current = call CPUResource.get();
+          call CPUResource.set(QUANTO_ACTIVITY(APP)));
           call UARTSend.send(AM_BROADCAST_ADDR, &uart_msg, len[count-1]);
-          call CPUContext.set(current);
+          call CPUResource.set(current);
         }
       call Timer.startOneShot( 1000 );
       count++;

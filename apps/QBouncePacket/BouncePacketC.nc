@@ -17,7 +17,7 @@ module BouncePacketC {
         interface SplitControl as AMControl;
         interface Packet;
         interface Leds;
-        interface SingleContext as CPUContext;
+        interface SingleActivityResource as CPUResource;
         interface RadioBackoff;
 
         interface LowPowerListening;
@@ -180,8 +180,8 @@ implementation {
         call QuantoLog.record();
         //mk_act_local returns a act_t with the given activity and
         //  the local node as the node part
-        c = call CPUContext.get();
-        call CPUContext.set(mk_act_local(ACT_BOUNCE));
+        c = call CPUResource.get();
+        call CPUResource.set(mk_act_local(ACT_BOUNCE));
         //start logging
         state = S_STARTED;
 
@@ -194,8 +194,8 @@ implementation {
             bm->origin = TOS_NODE_ID;
             scheduleSend(i, getTime() >> 1);
         } 
-        //restore the CPU Context
-        call CPUContext.set(c);
+        //restore the CPU activity
+        call CPUResource.set(c);
     }
 
     event void StopTimer.fired() {

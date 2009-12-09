@@ -54,7 +54,7 @@ module RadioCountToLedsC {
     interface SplitControl as AMControl;
     interface Packet;
 
-    interface SingleContext as CPUContext;
+    interface SingleActivityResource as CPUResource;
     interface LowPowerListening;
   }
 }
@@ -77,7 +77,7 @@ implementation {
 #ifdef APP_LPL_INTERVAL
             call LowPowerListening.setLocalSleepInterval(APP_LPL_INTERVAL);
 #endif
-      call CPUContext.set(mk_act_local(QUANTO_ACTIVITY(COUNT_TO_LEDS)));
+      call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(COUNT_TO_LEDS)));
       call MilliTimer.startPeriodic(500);
     }
     else {

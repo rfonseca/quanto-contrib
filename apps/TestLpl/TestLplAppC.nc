@@ -16,7 +16,7 @@ implementation
     components ActiveMessageC;
     components new AMReceiverC(AM_BOUNCEPACKET);
     
-    components ResourceContextsC;
+    components QuantoResourcesC;
 
     TestLpl.Boot -> MainC;
     TestLpl.Leds -> LedsC;
@@ -27,7 +27,7 @@ implementation
     TestLpl.QuantoLog -> CLog;
     TestLpl.UserButtonNotify -> UserButtonC;
 
-    TestLpl.CPUContext -> ResourceContextsC.CPUContext;
+    TestLpl.CPUResource -> QuantoResourcesC.CPUResource;
 
     components CC2420ActiveMessageC;
     TestLpl.LowPowerListening -> CC2420ActiveMessageC;

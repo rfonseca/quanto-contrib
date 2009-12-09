@@ -1,29 +1,29 @@
 #include <Timer.h>
 #include <UserButton.h>
 
-/* Test App 1 for Context across task invocations
- * Tests the Context module and the CtxBasicSchedulerP module
+/* Test App 1 for carrying activity labels across task invocations
+ * Tests the SingleActivityResource module and the scheduler module.
  * Two tasks are attributed different contexts A and B, and 
  * alternate rescheduling themselves.
  * The context of a task is preserved and propagated to any task that
  * it posts. 
  */
 
-module TestSingleContextC
+module TestSingleActivityResourceC
 {
   uses interface Leds;
   uses interface Boot;
   uses interface Random;
-  uses interface SingleContext as CPUContext;
+  uses interface SingleActivityResource as CPUResource;
   uses interface QuantoLog;
   uses interface Notify<button_state_t> as UserButtonNotify;
 }
 implementation
 {
   enum {
-    ACT_MAIN = 1,
-    ACT_A = 2,
-    ACT_B = 3,
+    QUANTO_ACTIVITY(MAIN) = NEW_QUANTO_ACTIVITY_ID,
+    QUANTO_ACTIVITY(A) = NEW_QUANTO_ACTIVITY_ID,
+    QUANTO_ACTIVITY(B) = NEW_QUANTO_ACTIVITY_ID,
   };
 
   enum {
@@ -40,15 +40,15 @@ implementation
   task void taskB();
 
   void start() {
-    act_t old_ctx = call CPUContext.get();
+    act_t old_ctx = call CPUResource.get();
     call QuantoLog.record();
-    call CPUContext.set(mk_act_local(ACT_A));
+    call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(A)));
     if (remaining--)
         post taskA();
-    call CPUContext.set(mk_act_local(ACT_B));
+    call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(B)));
     if (remaining--)
         post taskB();
-    call CPUContext.set(old_ctx);
+    call CPUResource.set(old_ctx);
   }
 
   event void Boot.booted()
@@ -60,7 +60,7 @@ implementation
     if (buttonState == BUTTON_PRESSED) {
         call Leds.led1Toggle();
         initState();
-        call CPUContext.set(mk_act_local(ACT_MAIN));
+        call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(MAIN)));
         start();
     }
   }
@@ -70,10 +70,10 @@ implementation
     uint32_t i;
     uint32_t lim;
     int a = 0;
-    act_t c = call CPUContext.get();
-    if (c == mk_act_local(ACT_A)) 
+    act_t c = call CPUResource.get();
+    if (c == mk_act_local(QUANTO_ACTIVITY(A))) 
         call Leds.led0Toggle();
-    else if (c == mk_act_local(ACT_B))
+    else if (c == mk_act_local(QUANTO_ACTIVITY(B)))
         call Leds.led2Toggle();
     //lim = 50000;
     lim = call Random.rand32() % 100000u;
@@ -82,7 +82,7 @@ implementation
   }
 
   void done() {
-     call CPUContext.set(mk_act_local(ACT_MAIN));
+     call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(MAIN)));
      call QuantoLog.flush();
   }
 

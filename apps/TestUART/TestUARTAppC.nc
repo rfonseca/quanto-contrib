@@ -52,10 +52,10 @@ implementation
   TestUARTC.Timer -> Timer;
   TestUARTC.Leds -> LedsC;
 
-  components ResourceContextsC;
+  components QuantoResourcesC;
   components QuantoLogRawUARTC as QuantoLog;
   components UserButtonC;
-  TestUARTC.CPUContext -> ResourceContextsC.CPUContext;
+  TestUARTC.CPUResource -> QuantoResourcesC.CPUResource;
   TestUARTC.QuantoLog -> QuantoLog;
   TestUARTC.UserButtonNotify -> UserButtonC;
   components new SerialAMSenderC(AM_TEST_UART) as UARTSender;
