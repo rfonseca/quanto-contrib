@@ -1,3 +1,9 @@
+ifeq ($(findstring Darwin, $(shell uname)), Darwin)
+  export GCC=gcc-4.0
+  CFLAGS += -D_FORTIFY_SOURCE=0
+  MIGFLAGS += -D_FORTIFY_SOURCE=0
+endif
+
 FILES=QuantoLogEntry.py QuantoLogConstants.py QuantoCoreConstants.py \
       QuantoCC2420Constants.py QuantoLogMsgV.py \
       QuantoCTimeConstants.py QuantoCTimeMsg.py
@@ -5,13 +11,14 @@ all: $(FILES)
 clean:
 	rm $(FILES) *.pyc
 QuantoLogEntry.py: $(QUANTO_ROOT)/tos/lib/quanto/QuantoLog/RawUartMsg.h 
-	mig -o $@ -python-classname=QuantoLogEntry python \
+	which $(GCC)
+	mig $(MIGFLAGS) -o $@ -python-classname=QuantoLogEntry python \
               $(QUANTO_ROOT)/tos/lib/quanto/QuantoLog/RawUartMsg.h \
               nx_entry_t
 
 QuantoLogMsgV.py: $(QUANTO_ROOT)/tos/lib/quanto/QuantoLog/QuantoLogStagedMyUART.h \
                   $(QUANTO_ROOT)/tos/lib/quanto/QuantoLog/RawUartMsg.h 
-	mig -o $@ -python-classname=QuantoLogMsgV python \
+	mig $(MIGFLAGS) -o $@ -python-classname=QuantoLogMsgV python \
               $(QUANTO_ROOT)/tos/lib/quanto/QuantoLog/QuantoLogStagedMyUART.h \
               quanto_vlog_msg_t
 
@@ -53,7 +60,7 @@ QuantoCTimeConstants.py: $(QUANTO_ROOT)/tos/lib/quanto/QuantoLog/QuantoLogCumula
                 TYPE_CTIME_BODY
 
 QuantoCTimeMsg.py: $(QUANTO_ROOT)/tos/lib/quanto/QuantoLog/QuantoLogCumulative.h
-	mig -I$(QUANTO_ROOT)/tos/lib/quanto -DMIG -o $@ -python-classname=QuantoCTimeMsg python \
+	mig $(MIGFLAGS) -I$(QUANTO_ROOT)/tos/lib/quanto -DMIG -o $@ -python-classname=QuantoCTimeMsg python \
              $(QUANTO_ROOT)/tos/lib/quanto/QuantoLog/QuantoLogCumulative.h \
              ctime_msg_t
 
