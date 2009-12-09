@@ -2,7 +2,7 @@
 
 module QuantoLogCumulativeAMP {
    uses {
-      interface SingleContextTrack as SingleActivityResourceTrack[uint8_t res_id];
+      interface SingleActivityResourceTrack as SingleActivityResourceTrack[uint8_t res_id];
       interface ActivityType;
       interface Counter<T32khz,uint32_t> as Counter;
       interface TaskQuanto as ReportTask;

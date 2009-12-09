@@ -1,6 +1,6 @@
 #include "nprintf2.h"
-/** Simple module that logs context changes.
- *  It logs in response to Context.changed events into a 
+/** Simple module that logs activity changes.
+ *  It logs in response to activity.changed events into a 
  *  memory array and dumps them to the UART using the
  *  Debug interface. 
  */
