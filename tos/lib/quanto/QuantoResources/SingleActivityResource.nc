@@ -51,7 +51,7 @@ interface SingleActivityResource {
      *  restore activity is _idle_, this function doesn't register
      *  change. This is because the task loop will do so
      *  appropriately.
-     *  @param restoreContext the old activity to be restored after the
+     *  @param restoreActivity the old activity to be restored after the
      *                        handler returns. This is kept as a stack
      *                        variable by the handler.
      */

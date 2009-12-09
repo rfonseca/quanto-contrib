@@ -1,5 +1,5 @@
 #include "activity.h"
-#include "SingleContext.h"
+#include "QuantoResources.h"
 
 /* Provides a parameterized set of single Activity interfaces 
    The parameterization is on local resource ids, made from
