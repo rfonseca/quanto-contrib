@@ -2,18 +2,19 @@ Contains several implementations of Quanto Loggers.
 The connection to the rest of the Quanto System is through the two
 interfaces
 
- SingleContextTrack
- MultiContextTrack
+ SingleActivityResourceTrack
+ MultiActivityResourceTrack
  PowerStateTrack
 
-Currently there are three major approaches, but we have others
-planned (including compressing the UART stream).
+Currently there are three major approaches:
 
   1. QuantoLogMyUARTWriterC is a log that streams over the UART.
   Files:
      QuantoLogMyUARTWriterC/P
-   
-  2. QuantoLogPortWriterC is a logger that doesn't need any
+  2. QuantoLogCompressedMyUartWriterC/P
+     Also streams the log but compresses first.
+
+  3. QuantoLogPortWriterC is a logger that doesn't need any
 configuration, and uses a byte-wide port in the processor to write
 out log data. It uses a producer-consumer buffer to absorb rate
 mismatches when there are bursts of logs, and uses a different task
@@ -27,7 +28,7 @@ you don't have this...
     PortWriter*
     QuantoLogPortWriter*
     
-  3. The original in-memory QuantoLog family of loggers, which log
+  4. The original in-memory QuantoLog family of loggers, which log
 to a buffer in RAM and then dump the log to the UART. They require
 an interface to start, stop, and flush the log, but can also be
 configured to dump when full. Less recommended.
