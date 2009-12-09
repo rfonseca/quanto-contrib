@@ -1,10 +1,10 @@
 #QUANTO_ROOT is contrib/quanto/
 PFLAGS +=  -I. \
           -I$(QUANTO_ROOT)/tos/lib/quanto \
-          -I$(QUANTO_ROOT)/tos/lib/quanto/SingleActivityResource\
-          -I$(QUANTO_ROOT)/tos/lib/quanto/MultiActivityResource\
+          -I$(QUANTO_ROOT)/tos/lib/quanto/QuantoResources \
           -I$(QUANTO_ROOT)/tos/lib/quanto/QuantoLog \
-          -I$(QUANTO_ROOT)/tos/lib/quanto/PowerState\
+          -I$(QUANTO_ROOT)/tos/lib/quanto/PowerState \
+          -I$(QUANTO_ROOT)/tos/lib/quanto/Scheduler \
           -I$(QUANTO_ROOT)/tos/lib/icount \
           -I$(QUANTO_ROOT)/tos/lib/timer \
           -I$(QUANTO_ROOT)/tos/system \
