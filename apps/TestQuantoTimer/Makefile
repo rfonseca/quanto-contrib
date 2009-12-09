@@ -1,3 +1,3 @@
-COMPONENT=TestSingleContextTimerAppC
+COMPONENT=TestQuantoTimerAppC
 include $(MAKERULES)
 

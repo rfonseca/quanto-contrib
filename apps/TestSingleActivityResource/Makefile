@@ -1,4 +1,4 @@
-COMPONENT=TestSingleContextAppC
+COMPONENT=TestSingleActivityResourceAppC
 
 include $(MAKERULES)
 

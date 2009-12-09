@@ -71,7 +71,7 @@ implementation
   void start() {
     count = 0;
     call QuantoLog.record();
-    call CPUContext.set(mk_act_local(QUANTO_ACTIVITY(APP)));
+    call CPUResource.set(mk_act_local(QUANTO_ACTIVITY(APP)));
     post send();
   }
 
@@ -97,10 +97,10 @@ implementation
 
   task void send() 
   {
-      //act_t current = call CPUContext.get();
-      //call CPUContext.set(QUANTO_ACTIVITY(APP)));
+      //act_t current = call CPUResource.get();
+      //call CPUResource.set(QUANTO_ACTIVITY(APP)));
       call UARTSend.send(AM_BROADCAST_ADDR, &uart_msg, len[count]);
-      //call CPUContext.set(current);
+      //call CPUResource.set(current);
   }
   event void UARTSend.sendDone(message_t *msg, error_t error) {
     if (error != SUCCESS) {
