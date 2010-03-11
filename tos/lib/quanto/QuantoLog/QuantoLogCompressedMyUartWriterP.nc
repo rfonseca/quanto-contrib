@@ -130,7 +130,9 @@ implementation {
         }
         if (e != NULL) {
 
-            e->time  = call Counter.get();
+            e->time  = call Counter.get(); //TODO: time and ic not being inside
+                                           //      atomic may be causing
+                                           //      sporadic flipped readings
 #ifndef COUNT_LOG
             e->ic    = call EnergyMeter.read();
 #else
