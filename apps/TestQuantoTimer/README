@@ -1,5 +1,5 @@
 This test exercises activity carrying:
- - for the CPU, LED0, and LED1
+ - for the CPU, LED0, and LED2
  - across Tasks, Timers, and from Interrupts
 
 The main app starts up to activities, A and B, which 

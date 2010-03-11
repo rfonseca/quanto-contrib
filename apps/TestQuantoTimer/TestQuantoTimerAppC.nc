@@ -21,6 +21,6 @@ implementation
   TestQuantoTimerC.TimerB -> TimerB;
   TestQuantoTimerC.QuantoLog -> CLog;
   TestQuantoTimerC.CPUResource -> QuantoResourcesC.CPUResource;
-  TestQuantoTimerC.LED0Resource -> QuantoResourcesC.LED0Resource;
-  TestQuantoTimerC.LED2Resource -> QuantoResourcesC.LED2Resource;
+  TestQuantoTimerC.Led0Resource -> QuantoResourcesC.Led0Resource;
+  TestQuantoTimerC.Led2Resource -> QuantoResourcesC.Led2Resource;
 }

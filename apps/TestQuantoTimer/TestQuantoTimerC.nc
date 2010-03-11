@@ -20,8 +20,8 @@ module TestQuantoTimerC
   uses interface Timer<TMilli> as TimerB;   
 
   uses interface SingleActivityResource as CPUResource;
-  uses interface MultiActivityResource as LED0Resource;
-  uses interface MultiActivityResource as LED2Resource;
+  uses interface MultiActivityResource as Led0Resource;
+  uses interface MultiActivityResource as Led2Resource;
 }
 implementation
 {
@@ -93,10 +93,10 @@ implementation
     outstanding--;
     if (!ledOn) {
         call Leds.led0On();
-        call LED0Resource.add(call CPUResource.get());
+        call Led0Resource.add(call CPUResource.get());
     } else {
         call Leds.led0Off();
-        call LED0Resource.remove(call CPUResource.get());
+        call Led0Resource.remove(call CPUResource.get());
     }
     if (remaining)
         scheduleA();
@@ -110,10 +110,10 @@ implementation
     outstanding--;
     if (!ledOn) {
         call Leds.led2On();
-        call LED2Resource.add(call CPUResource.get());
+        call Led2Resource.add(call CPUResource.get());
     } else {
         call Leds.led2Off();
-        call LED2Resource.remove(call CPUResource.get());
+        call Led2Resource.remove(call CPUResource.get());
     }
     if (remaining)
         scheduleB();
