@@ -831,5 +831,6 @@ implementation {
   }
 
   event void QuantoLog.full() {}
+  event void QuantoLog.flushDone() {}
     
 }
