@@ -17,23 +17,50 @@ module QuantoLogCumulativeP {
 }
 implementation {
 
-/* At every interval of at least X, dump the table to the UART
- * Use double buffering and swap the pointer
- */
+/* This module accumulates and periodically reports the
+ * total *time* each *resource* (e.g., Led0, Cpu, Radio)
+ * spend on behalf of each activity.
+ * There are some decisions to make when doing this:
+ * 1. How to account for time when a resource is working
+ *    on behalf of multiple activities?
+ * 2. How to aggregate information about activities originated
+ *    at other nodes? This can get tricky because of the 
+ *    static allocation regime in TinyOS, since we don't 
+ *    know how many other nodes exist, and even if we did,
+ *    we wouldn't want to allocate a table of size <total 
+ *    activities> X <nodes>.
+ *
+ * This module currently does this: 
+ * 1. Equaly split the time spent among all participating
+ *    activities. So, if two activities A and B are using
+ *    the red Led, then each gets charged for half of the time.
+ * 2. Groups all activities from other nodes as 'OTHER_NODE'.
+ *    It's possible to group by activities, or by individual
+ *    other nodes, this is just a first cut.
+ * 
+ * At every interval of at least X, we dump the table to the UART
+ * using double buffering and swapping the pointer.
+ * The module sends updates every second, and has up to
+ * 1 second to write these to the UART. We use a timer
+ * that ticks at 32768 Hz, so we can safely use a 16-bit
+ * integer to represent deltas in the interval.
 
-   /*
-    * This module counts all activities by other nodes as
-    * a single activity. We create a new activity id,
-    * OTHER_NODE, which is never set, but will have a 
-    * slot and be reported. 
-    * We use a double buffer to snapshot the timings for
-    * a slot and then lock it for sending, while accepting
-    * updates to the other slot.
-    * The module sends updates every second, and has up to
-    * 1 second to write these to the UART. We use a timer
-    * that ticks at 32768 Hz, so we can safely use a 16-bit
-    * integer to represent deltas in the interval.
-    */
+ * We use a double buffer to snapshot the timings for
+ * a slot and then lock it for sending, while accepting
+ * updates to the other slot.
+
+
+ * This module currently has a fundamental flaw: we are
+ * aggregating time spend by each resource, but the power
+ * draw information (from the Quanto regression) is 
+ * organized by power state bits. A resource may have more
+ * than one bit (such as the radio), and hence multiple
+ * power states. We are loosing information about the
+ * multiple power states of individual resources. 
+ * 
+ * The right thing to do is to aggregate usage information
+ * by power state bits.
+ */
    
    enum {
       QUANTO_ACTIVITY(OTHER_NODE) = NEW_QUANTO_ACTIVITY_ID,
