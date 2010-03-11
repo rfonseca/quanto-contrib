@@ -172,7 +172,8 @@ implementation {
 
         memset(log_data_msg, 0, sizeof(quanto_log_msg_t));
         log_data_msg->entry.type = TYPE_COUNT_EV;
-        log_data_msg->entry.event_count = count;
+        //log_data_msg->entry.event_count = count;
+        log_data_msg->entry.arg = count;
 
         return call UARTSend.send(AM_BROADCAST_ADDR, &uart_msg, len);
     }
@@ -189,7 +190,7 @@ implementation {
         xe->res_id = e->res_id;
         xe->time   = e->time;
         xe->ic     = e->ic;
-        xe->act    = e->act;
+        xe->arg    = e->act;
 
         report_index++;
         return call UARTSend.send(AM_BROADCAST_ADDR, &uart_msg, len);
