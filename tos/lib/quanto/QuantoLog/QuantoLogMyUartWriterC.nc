@@ -2,7 +2,7 @@ configuration QuantoLogMyUartWriterC {
 }
 implementation {
     components MainC;
-    components QuantoLogMyUARTWriterP as QLog;
+    components QuantoLogMyUartWriterP as QLog;
     components TinySchedulerC;
 
     QLog.Boot -> MainC;

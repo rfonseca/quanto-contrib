@@ -48,7 +48,6 @@ implementation
   components new TimerMilliC() as Timer2;
 
   //components QuantoLogPortWriterC;
-  //components QuantoLogMyUARTWriterC;
   components QuantoLogCompressedMyUartWriterC;
   //components QuantoLogMyUartWriterC;
   //components QuantoLogCumulativeC;

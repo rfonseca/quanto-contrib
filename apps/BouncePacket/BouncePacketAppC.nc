@@ -21,7 +21,7 @@ implementation
     components QuantoResourcesC;
 
     //Enable continuous streaming log over the UART
-    components QuantoLogMyUARTWriterC;
+    components QuantoLogMyUartWriterC;
 
     Bounce.Boot -> MainC;
     Bounce.Random -> RandomC;

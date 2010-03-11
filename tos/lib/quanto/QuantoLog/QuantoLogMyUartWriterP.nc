@@ -6,7 +6,7 @@
 
 /* STATUS: keeps logging exit_interrupt from the UART interrupt */
 
-module QuantoLogMyUARTWriterP {
+module QuantoLogMyUartWriterP {
     uses {
         //interface SingleActivityResourceTrack[uint8_t global_res_id];
         interface MultiActivityResourceTrack[uint8_t global_res_id];

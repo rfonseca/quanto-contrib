@@ -64,7 +64,7 @@ implementation {
   App.CPUResource -> QuantoResourcesC.CPUResource;
 
   //components QuantoLogCompressedMyUartWriterC;
-  //components QuantoLogMyUARTWriterC;
+  //components QuantoLogMyUartWriterC;
    components QuantoLogCumulativeC;
 
   components CC2420ActiveMessageC;
