@@ -43,6 +43,8 @@ implementation {
       REPORT_INTERVAL = 32768u,
       NO_BIND = 0,
       BIND    = 1,
+      M_ACT_ADD = 0,
+      M_ACT_REM = 1,
    };
 
    inline uint8_t ignoreInterrupt(act_t act) {
@@ -147,7 +149,16 @@ implementation {
       uint8_t res;
 
       //get the index for the activity
-      //Currently aggregating all activities 
+      //Currently aggregating all activities of another node as OTHER_NODE
+      // Other policies are possible:
+      //   a. aggregate per activity (e.g. all act A from any node as ACT_EXT_A)
+      //   b. aggregate per node (e.g. all acts from node X as ACT_NODE_X)
+      //   c. aggregate per node/activity pair
+      //   (a) requires bounded space, O(total activities)
+      //   (b) requires O(nodes), which is unbounded
+      //   (c) requires O(activities x nodes), which is also unbounded
+      //   For (b) and (c) we probably need to use a hash table, or to keep a 
+      //   set of most frequent occurrences, similar to what they do in switches.
       if (node != TOS_NODE_ID) {
          act = QUANTO_ACTIVITY(OTHER_NODE);
       }
@@ -279,34 +290,82 @@ implementation {
       recordChange(res_id, oldActivity, newActivity, NO_BIND);
    }
 
+   /* Record the change to a MultiActivityResource.
+    * op can be one of M_ACT_ADDED, M_ACT_REMOVED, M_ACT_IDLE. */
+   void 
+   multiActivityRecordChange(uint8_t res_id, act_t activity, uint8_t op)
+   {
+      uint32_t now = call Counter.get();
+      uint16_t delta;
+      uint8_t n;
+      ActivitySet *as = &m_act_sets[res_id];
+
+      uint16_t node = call ActivityType.getNode(&activity);
+      act_type_t act = call ActivityType.getActType(&activity); 
+
+       //get the index for the activity
+      if (node != TOS_NODE_ID) {
+         act = QUANTO_ACTIVITY(OTHER_NODE);
+      }
+ 
+      atomic {       
+         //Gather stats about last period
+         n = activitySet_numElements(as);
+         delta = (uint16_t)(now - m_last_time[res_id]);
+         w_delta = delta/n; //policy: equally divide the time since last
+                            //change among all activities
+
+
+         //Credit the fraction of time to the previous members
+         //  (decreasing n here is just an optimization so we don't keep going
+         //   after we've seen all elements.)
+         for (i = 0; i < ACT_SET_SIZE && n; i++) {
+            if (activitySet_isMember(as, i)) {
+               n--;
+               m_time[m_slot][res_id][i] += w_delta;    
+            }
+         }
+         m_last_time[res_id] = now;
+
+         //Change the activity set 
+         if (op == M_ACT_ADDED) 
+            activitySet_add(as, act);
+         else if (op == M_ACT_REMOVED)
+            activitySet_remove(as, act);
+         else if (op == M_ACT_IDLE)
+            activitySet_clear(as);
+      
+         //see if it is time to report
+         to_report = (!m_report_pending && ((now - m_slot_start[m_slot]) > REPORT_INTERVAL) );
+         if (to_report) {
+            m_report_pending = RESOURCE_COUNT + 1;
+            //close the times for all resources but res_id (which is already closed)
+            for (i = 1; i < RESOURCE_COUNT; i++) {
+               res = (res_id + i) % RESOURCE_COUNT; 
+               m_time[m_slot][res][m_current_act[res]] += (uint16_t)(now - m_last_time[res]);
+               m_last_time[res] = now;
+            }
+            switch_slot();
+            m_slot_start[m_slot] = now;
+         }
+      }
+      if (to_report) {
+         call ReportTask.postTask(act_quanto_log);
+      }
+   }
+ 
+
    async event void
    MultiActivityResourceTrack.added[uint8_t res_id](act_t activity)
    {
-      #if 0
-      //activitySet_add(&m_act_sets[res_id], activity)
-      delta = (uint16_t)(now - m_last_time[res_id]);
-      n = activitySet_numElements(&m_act_sets[res_id]);
-      w_delta = delta/n; //policy: equally divide the tie since last
-                         //change among all activities
-      max = activitySet_capacity(&m_act_sets[res_id]);
-      //decreasing n here is just an optimization so we don't keep going
-      //after we've seen all elements.
-      for (i = 0; i < max && n; i++) {
-         if (activitySet_isMember(&m_act_sets[res_id], i)) {
-            n--;
-            m_time[m_slot][res_id][i] += w_delta;    
-         }
-      }
-      m_last_time[res_id] = now;
-      activitySet_add(act);
-      
-      //see if it is time to report
-      #endif     
+      multiActivityRecordChange(res_id, activity, M_ACT_ADDED);
    }
-   
+
+  
    async event void
    MultiActivityResourceTrack.removed[uint8_t res_id](act_t activity)
    {
+      multiActivityRecordChange(res_id, activity, M_ACT_REMOVED);
       //record previous state
       //remove
       //check if we have to report
